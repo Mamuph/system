@@ -222,6 +222,9 @@ abstract class Core_Apprunner
             $ext = '';
         }
 
+        // Add directory separator
+        $dir .= !empty($dir) && $dir[mb_strlen($dir) - 1] === DS ? '' : DS;
+
         // Create a partial path of the filename
         $path = $dir . $file . $ext;
 
