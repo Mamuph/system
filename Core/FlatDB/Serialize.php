@@ -29,7 +29,7 @@ class Core_FlatDB_Serialize extends FlatDB_Driver
         // Open file if exists
         if (File::exists($this->_datafile_path))
         {
-            $this->data = file_get_contents(unserialize($this->_datafile_path));
+            $this->data = unserialize(file_get_contents($this->_datafile_path));
 
             if ($this->data === false)
                 throw new ErrorException('Unable to open/read ' . $this->_datafile_path);
