@@ -340,7 +340,7 @@ abstract class Core_Apprunner
             return call_user_func_array(array($controller, $controller_method), count($args) === 0 ? null : $args);
         }
         else
-            $controller->action_main();
+            return $controller->action_main();
     }
 
 
