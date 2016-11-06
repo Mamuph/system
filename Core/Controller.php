@@ -4,8 +4,8 @@
 /**
  * Abstract controller class.
  *
- * @package     Mamuph
- * @category    Apprunner
+ * @package     Mamuph Controller
+ * @category    Controller
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
  */

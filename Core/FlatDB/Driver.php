@@ -3,7 +3,7 @@
 /**
  * FlatDB driver abstract class.
  *
- * @package     Mamuph
+ * @package     Mamuph FlatDB
  * @category    FlatDB
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
@@ -18,7 +18,7 @@ abstract class Core_FlatDB_Driver
     
 
     /**
-     * Storage the data that was wroted in memory
+     * Storage the data that was wrote in memory
      * 
      * @return bool
      */

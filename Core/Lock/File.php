@@ -4,7 +4,7 @@
 /**
  * File lock writer. Writes out in the lock file
  *
- * @package     Mamuph
+ * @package     Mamuph Lock
  * @category    Lock
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
@@ -21,9 +21,11 @@ abstract class Core_Lock_File extends Lock_Writer
     /**
      * Creates/open a file lock. Checks that path exists and file is writable.
      *
-     *     $writer = new Lock_File($file);
+     * @example
      *
-     * @param   string  $file  Lock file name
+     *     $lock = new Lock_File($file);
+     *
+     * @param   string  $path  Lock file name
      */
     public function __construct($path)
     {
@@ -35,7 +37,9 @@ abstract class Core_Lock_File extends Lock_Writer
     /**
      * Writes on the lock file
      *
-     *     $writer->write($data);
+     * @example
+     *
+     *     $lock->write($data);
      *
      * @param   mixed   $data
      * @return  bool
@@ -68,11 +72,12 @@ abstract class Core_Lock_File extends Lock_Writer
     /**
      * Check that lock file exists
      *
+     * @uses File::exists() in order to check if file exists
      * @return bool
      */
     public function exists()
     {
-        return file_exists($this->_filename);
+        return File::exists($this->_filename);
     }
 
 

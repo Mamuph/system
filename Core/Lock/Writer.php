@@ -4,7 +4,7 @@
 /**
  * Lock writer abstract class. All [Lock] writers must extend this class.
  *
- * @package     Mamuph
+ * @package     Mamuph Lock
  * @category    Lock
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
@@ -15,7 +15,9 @@ abstract class Core_Lock_Writer
     /**
      * Write an array of messages.
      *
-     *     $writer->write($messages);
+     * @example
+     *
+     *     $lock->write($messages);
      *
      * @param   mixed   $messages
      * @return  void
@@ -26,7 +28,9 @@ abstract class Core_Lock_Writer
     /**
      * Read the lock file content
      *
-     *      $writer->read();
+     * @example
+     *
+     *      $lock->read();
      *
      * @return mixed
      */
@@ -36,6 +40,8 @@ abstract class Core_Lock_Writer
     /**
      * Remove the lock reference
      *
+     * @example
+     *
      *      $writer->destroy();
      *
      * @return bool
@@ -44,15 +50,19 @@ abstract class Core_Lock_Writer
 
 
     /**
+     * Check that if lock file exists
      *
      * @return mixed
      */
     abstract public function exists();
 
+
     /**
      * Allows the writer to have a unique key when stored.
      *
-     *     echo $writer;
+     * @example
+     *
+     *     echo $lock;
      *
      * @return  string
      */

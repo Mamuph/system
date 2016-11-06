@@ -4,7 +4,7 @@
 /**
  * Abstract model class.
  *
- * @package     Mamuph
+ * @package     Mamuph Lock
  * @category    Lock
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
@@ -40,6 +40,8 @@ abstract class Core_Lock
     /**
      * Get the singleton instance of this class and enable writing at shutdown.
      *
+     * @example
+     *
      *     $lock = Lock::instance($locker_id);
      *
      * @param   string  Lock instance ID
@@ -63,6 +65,8 @@ abstract class Core_Lock
     /**
      * Attaches a lock writer
      *
+     * @example
+     *
      *     $lock->attach($writer);
      *
      * @param   Lock_Writer  $writer    instance
@@ -79,6 +83,8 @@ abstract class Core_Lock
 
     /**
      * Detaches a lock writer. The same writer object must be used.
+     *
+     * @example
      *
      *     $lock->detach($writer);
      *
@@ -110,6 +116,8 @@ abstract class Core_Lock
     /**
      * Write in lockfile
      *
+     * @example
+     *
      *     $lock->write($data);
      *
      * @param   mixed   $data   Data or string
@@ -124,6 +132,8 @@ abstract class Core_Lock
 
     /**
      * Read a lockfile
+     *
+     * @example
      *
      *      $lock->read();
      *

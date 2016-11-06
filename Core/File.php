@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Array helper.
+ * File helper.
  *
- * @package    Mamuph
+ * @package    Mamuph File Helper
  * @category   Helpers
  * @author     Mamuph Team
  * @copyright  (c) 2016 Mamuph Team
@@ -105,6 +105,14 @@ class Core_File
 
     /**
      * Check if file exists
+     *
+     * @example
+     *
+     *      // Check if file exists inside project or PHAR
+     *      File::exists($filename, File::SCOPE_LOCAL);
+     *
+     *      // Check if file exists outside the project or PHAR
+     *      File::exists($filename, File::SCOPE_EXTERNAL);
      *
      * @param string    $path   File path
      * @param int       $scope  Search scope (Default: FILESCOPE_AUTO)

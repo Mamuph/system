@@ -4,7 +4,7 @@
 /**
  * Interface for config readers
  *
- * @package    Mamuph
+ * @package    Mamuph Config
  * @category   Configuration
  * @author     Kohana Team
  * @copyright  (c) 2008-2012 Kohana Team

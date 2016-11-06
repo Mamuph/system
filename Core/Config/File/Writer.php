@@ -6,10 +6,11 @@
  * File-based configuration writer. Multiple configuration directories can be
  * used by attaching multiple instances of this class to [Core_Config].
  *
- * @package    Mamuph
+ * @package    Mamuph Config
  * @category   Configuration
  * @author     Mamuph Team
  * @copyright  (c) 2009-2016 Mamuph Team
+ * @license    http://mamuph.org/license
  */
 class Core_Config_File_Writer implements Core_Config_Writer {
 
@@ -21,6 +22,7 @@ class Core_Config_File_Writer implements Core_Config_Writer {
      * @var string
      */
     protected $_directory = '';
+
 
     /**
      * Creates a new file reader using the given directory as a config source
@@ -37,9 +39,16 @@ class Core_Config_File_Writer implements Core_Config_Writer {
     /**
      * Write and merge the configuration
      *
-     * @param string $group
-     * @param string $key
-     * @param array $config
+     * @example
+     *
+     *      $config->write($group, $key, $config);
+     *
+     * @param   string $group
+     * @param   string $key
+     * @param   array $config
+     * @uses    Apprunner::find_file to find file
+     * @uses    Apprunner::includes to include file
+     * @return  void
      */
     public function write($group, $key, $config)
     {

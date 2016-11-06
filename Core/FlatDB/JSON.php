@@ -3,7 +3,7 @@
 /**
  * Serialization driver for FlatDB (JSON format).
  *
- * @package     Mamuph
+ * @package     Mamuph FlatDB
  * @category    FlatDB
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
@@ -18,9 +18,11 @@ class Core_FlatDB_JSON extends FlatDB_Driver
 
 
     /**
-     * Core_FlatDB_Serialize constructor.
+     * Core_FlatDB_JSON constructor.
      *
      * @param $datafile_path
+     * @throws ErrorException
+     * @uses File::exists() in order to check if file exists
      */
     public function __construct($datafile_path)
     {

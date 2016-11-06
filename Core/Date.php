@@ -3,7 +3,7 @@
 /**
  * Date helper.
  *
- * @package    Mamuph
+ * @package    Mamuph Date Helper
  * @category   Helpers
  * @author     Kohana Team
  * @copyright  (c) 2009-2012 Kohana Team
@@ -35,9 +35,12 @@ class Core_Date {
      */
     public static $timezone;
 
+
     /**
      * Returns the offset (in seconds) between two time zones. Use this to
      * display dates to users in different time zones.
+     *
+     * @example
      *
      *     $seconds = Date::offset('America/Chicago', 'GMT');
      *
@@ -77,9 +80,12 @@ class Core_Date {
         return $offset;
     }
 
+
     /**
      * Number of seconds in a minute, incrementing by a step. Typically used as
      * a shortcut for generating a list that can used in a form.
+     *
+     * @example
      *
      *     $seconds = Date::seconds(); // 01, 02, 03, ..., 58, 59, 60
      *
@@ -103,9 +109,12 @@ class Core_Date {
         return $seconds;
     }
 
+
     /**
      * Number of minutes in an hour, incrementing by a step. Typically used as
      * a shortcut for generating a list that can be used in a form.
+     *
+     * @example
      *
      *     $minutes = Date::minutes(); // 05, 10, 15, ..., 50, 55, 60
      *
@@ -122,9 +131,12 @@ class Core_Date {
         return Date::seconds($step);
     }
 
+
     /**
      * Number of hours in a day. Typically used as a shortcut for generating a
      * list that can be used in a form.
+     *
+     * @example
      *
      *     $hours = Date::hours(); // 01, 02, 03, ..., 10, 11, 12
      *
@@ -159,8 +171,11 @@ class Core_Date {
         return $hours;
     }
 
+
     /**
      * Returns AM or PM, based on a given hour (in 24 hour format).
+     *
+     * @example
      *
      *     $type = Date::ampm(12); // PM
      *     $type = Date::ampm(1);  // AM
@@ -176,8 +191,11 @@ class Core_Date {
         return ($hour > 11) ? 'PM' : 'AM';
     }
 
+
     /**
      * Adjusts a non-24-hour number into a 24-hour number.
+     *
+     * @example
      *
      *     $hour = Date::adjust(3, 'pm'); // 15
      *
@@ -212,6 +230,8 @@ class Core_Date {
     /**
      * Number of days in a given month and year. Typically used as a shortcut
      * for generating a list that can be used in a form.
+     *
+     * @example
      *
      *     Date::days(4, 2010); // 1, 2, 3, ..., 28, 29, 30
      *
@@ -250,9 +270,12 @@ class Core_Date {
         return $months[$year][$month];
     }
 
+
     /**
      * Number of months in a year. Typically used as a shortcut for generating
      * a list that can be used in a form.
+     *
+     * @example
      *
      * By default a mirrored array of $month_number => $month_number is returned
      *
@@ -292,10 +315,14 @@ class Core_Date {
         return $months;
     }
 
+
     /**
      * Returns an array of years between a starting and ending year. By default,
      * the the current year - 5 and current year + 5 will be used. Typically used
      * as a shortcut for generating a list that can be used in a form.
+     *
+     * @example
+     *
      *
      *     $years = Date::years(2000, 2010); // 2000, 2001, ..., 2009, 2010
      *
@@ -319,10 +346,13 @@ class Core_Date {
         return $years;
     }
 
+
     /**
      * Returns time difference between two timestamps, in human readable format.
      * If the second timestamp is not given, the current time will be used.
      * Also consider using [Date::fuzzy_span] when displaying a span.
+     *
+     * @example
      *
      *     $span = Date::span(60, 182, 'minutes,seconds'); // array('minutes' => 2, 'seconds' => 2)
      *     $span = Date::span(60, 182, 'minutes'); // 2
@@ -408,9 +438,12 @@ class Core_Date {
         return $output;
     }
 
+
     /**
      * Returns the difference between a time and now in a "fuzzy" way.
      * Displaying a fuzzy time instead of a date is usually faster to read and understand.
+     *
+     * @example
      *
      *     $span = Date::fuzzy_span(time() - 10); // "moments ago"
      *     $span = Date::fuzzy_span(time() + 20); // "in moments"
@@ -526,6 +559,8 @@ class Core_Date {
 
     /**
      * Returns a date/time string with the specified timestamp format
+     *
+     * @example
      *
      *     $time = Date::formatted_time('5 minutes ago');
      *

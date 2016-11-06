@@ -4,7 +4,7 @@
 /**
  * Abstract Apprunner class. Apprunner is the Mamuph core class
  *
- * @package     Mamuph
+ * @package     Mamuph Core
  * @category    Apprunner
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
@@ -16,7 +16,7 @@ abstract class Core_Apprunner
     const NAMESPACE_PREFIX = 'Mamuph\\';
 
     // Mamuph core version
-    const VERSION = '1.1';
+    const VERSION = '1.9';
 
     // Environment constants (Can be used as bitmask)
     const DEVELOPMENT   = 0b0001;
@@ -30,29 +30,32 @@ abstract class Core_Apprunner
 
 
     /**
-     * @var     string  Default environment
+     * @var string  Default environment
      */
     public static $environment = Apprunner::DEVELOPMENT;
 
 
     /**
-     * @var     string  Character set of input and output
+     * @var string  Character set of input and output
      */
     public static $charset = 'utf-8';
 
 
     /**
-     * @var  array   Include paths that are used to find files
+     * @var array   Include paths that are used to find files
      */
     protected static $_paths = [APPPATH, SYSPATH, CONFIGPATH];
 
 
+    /**
+     * @var array   Loaded modules
+     */
     protected static $_modules = [];
+
 
     /**
      * Initializes the environment:
      *
-     * - Disables register_globals and magic_quotes_gpc
      * - Determines the current environment
      * - Set global settings
      *
@@ -134,6 +137,8 @@ abstract class Core_Apprunner
     /**
      * Changes the currently enabled modules. Module paths may be relative
      * or absolute, but must point to a directory:
+     *
+     * @example
      *
      *      Apprunner::modules(array('foomodule' => array('path' => MODPATH.'foo'));
      *
@@ -273,6 +278,7 @@ abstract class Core_Apprunner
         return $found;
     }
 
+
     /**
      * Load script using the require function
      *
@@ -298,7 +304,14 @@ abstract class Core_Apprunner
 
 
     /**
+     * Load and execute an action defined into a Controller.
+     * By default the "action_main" is called
      *
+     * @example
+     *
+     *      Apprunner::execute('MyController');
+     *
+     * @return mixed|void
      */
     public static function execute()
     {
@@ -324,7 +337,7 @@ abstract class Core_Apprunner
                 array_shift($args);
 
             // Call dynamically to the default_method
-            call_user_func_array(array($controller, $controller_method), count($args) === 0 ? null : $args);
+            return call_user_func_array(array($controller, $controller_method), count($args) === 0 ? null : $args);
         }
         else
             $controller->action_main();
@@ -352,6 +365,15 @@ abstract class Core_Apprunner
 
     /**
      * Terminate program and return an exit code.
+     *
+     * @example
+     *
+     *
+     *      Apprunner::terminate(Apprunner::EXIT_SUCESSS);
+     *
+     *      // OR
+     *
+     *      Apprunner::terminate(Apprunner::EXIT_FAILURE);
      *
      * @param int $exit_code
      */

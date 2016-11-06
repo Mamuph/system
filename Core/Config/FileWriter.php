@@ -6,7 +6,7 @@
  * File-based configuration reader. Multiple configuration directories can be
  * used by attaching multiple instances of this class to [Config].
  *
- * @package    Mamuph
+ * @package    Mamuph Config
  * @category   Configuration
  * @author     Mamuph Team
  * @copyright  (c) 2009-2016 Mamuph Team

@@ -3,7 +3,7 @@
 /**
  * Serialization driver for FlatDB (Serialization format).
  *
- * @package     Mamuph
+ * @package     Mamuph FlatDB
  * @category    FlatDB
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
@@ -21,6 +21,7 @@ class Core_FlatDB_Serialize extends FlatDB_Driver
      * Core_FlatDB_Serialize constructor.
      *
      * @param $datafile_path
+     * @throws ErrorException
      */
     public function __construct($datafile_path)
     {

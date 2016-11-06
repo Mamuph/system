@@ -4,7 +4,7 @@
 /**
  * Array helper.
  *
- * @package    Mamuph
+ * @package    Mamuph Array Helper
  * @category   Helpers
  * @author     Mamuph and Kohana Team
  * @copyright  (c) 2007-2015 Kohana Team
@@ -18,6 +18,8 @@ class Core_Arr {
 
     /**
      * Tests if an array is associative or not.
+     *
+     * @example
      *
      *     // Returns TRUE
      *     Arr::is_assoc(array('username' => 'john.doe'));
@@ -38,8 +40,11 @@ class Core_Arr {
         return array_keys($keys) !== $keys;
     }
 
+
     /**
      * Test if a value is an array with an additional check for array-like objects.
+     *
+     * @example
      *
      *     // Returns TRUE
      *     Arr::is_array(array());
@@ -67,8 +72,11 @@ class Core_Arr {
         }
     }
 
+
     /**
      * Gets a value from an array using a dot separated path.
+     *
+     * @example
      *
      *     // Get the value of $array['foo']['bar']
      *     $value = Arr::path($array, 'foo.bar');
@@ -239,8 +247,11 @@ class Core_Arr {
         $array[array_shift($keys)] = $value;
     }
 
+
     /**
      * Fill an array with a range of numbers.
+     *
+     * @example
      *
      *     // Fill an array with values 5, 10, 15, 20
      *     $values = Arr::range(5, 20);
@@ -263,15 +274,18 @@ class Core_Arr {
         return $array;
     }
 
+
     /**
      * Retrieve a single key from an array. If the key does not exist in the
      * array, the default value will be returned instead.
      *
-     *     // Get the value "username" from $_POST, if it exists
-     *     $username = Arr::get($_POST, 'username');
+     * @example
      *
-     *     // Get the value "sorting" from $_GET, if it exists
-     *     $sorting = Arr::get($_GET, 'sorting');
+     *     // Get the value "username" from $GLOBALS, if it exists
+     *     $username = Arr::get($GLOBALS, 'username');
+     *
+     *     // Get the value "sorting" from $GLOBALS, if it exists
+     *     $sorting = Arr::get($GLOBALS, 'sorting');
      *
      * @param   array   $array      array to extract from
      * @param   string  $key        key name
@@ -282,6 +296,7 @@ class Core_Arr {
     {
         return isset($array[$key]) ? $array[$key] : $default;
     }
+
 
     /**
      * Retrieves multiple paths from an array. If the path does not exist in the
@@ -310,8 +325,11 @@ class Core_Arr {
         return $found;
     }
 
+
     /**
      * Retrieves muliple single-key values from a list of arrays.
+     *
+     * @example
      *
      *     // Get all of the "id" values from a result
      *     $ids = Arr::pluck($result, 'id');
@@ -338,8 +356,11 @@ class Core_Arr {
         return $values;
     }
 
+
     /**
      * Adds a value to the beginning of an associative array.
+     *
+     * @example
      *
      *     // Add an empty value to the start of a select list
      *     Arr::unshift($array, 'none', 'Select a value');
@@ -358,15 +379,18 @@ class Core_Arr {
         return $array;
     }
 
+
     /**
      * Recursive version of [array_map](http://php.net/array_map), applies one or more
      * callbacks to all elements in an array, including sub-arrays.
+     *
+     * @example
      *
      *     // Apply "strip_tags" to every element in the array
      *     $array = Arr::map('strip_tags', $array);
      *
      *     // Apply $this->filter to every element in the array
-     *     $array = Arr::map(array(array($this,'filter')), $array);
+     *     $array = Arr::map(array($this,'filter'), $array);
      *
      *     // Apply strip_tags and $this->filter to every element
      *     $array = Arr::map(array('strip_tags',array($this,'filter')), $array);
@@ -409,12 +433,15 @@ class Core_Arr {
         return $array;
     }
 
+
     /**
      * Recursively merge two or more arrays. Values in an associative array
      * overwrite previous values with the same key. Values in an indexed array
      * are appended, but only when they do not already exist in the result.
      *
      * Note that this does not work the same as [array_merge_recursive](http://php.net/array_merge_recursive)!
+     *
+     * @example
      *
      *     $john = array('name' => 'john', 'children' => array('fred', 'paul', 'sally', 'jane'));
      *     $mary = array('name' => 'mary', 'children' => array('jane'));
@@ -496,9 +523,12 @@ class Core_Arr {
         return $array1;
     }
 
+
     /**
      * Overwrites an array with values from input arrays.
      * Keys that do not exist in the first array will not be added!
+     *
+     * @example
      *
      *     $a1 = array('name' => 'john', 'mood' => 'happy', 'food' => 'bacon');
      *     $a2 = array('name' => 'jack', 'food' => 'tacos', 'drink' => 'beer');
@@ -534,9 +564,12 @@ class Core_Arr {
         return $array1;
     }
 
+
     /**
      * Creates a callable function and parameter list from a string representation.
      * Note that this function does not validate the callback string.
+     *
+     * @example
      *
      *     // Get the callback function and parameters
      *     list($func, $params) = Arr::callback('Foo::bar(apple,orange)');
@@ -580,8 +613,11 @@ class Core_Arr {
         return array($command, $params);
     }
 
+
     /**
      * Convert a multi-dimensional array into a single-dimensional array.
+     *
+     * @example
      *
      *     $array = array('set' => array('one' => 'something'), 'two' => 'other');
      *

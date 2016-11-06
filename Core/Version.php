@@ -4,7 +4,7 @@
 /**
  * Version helper class
  *
- * @package     Mamuph
+ * @package     Mamuph Params Helper
  * @category    Helpers
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team

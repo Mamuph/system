@@ -9,7 +9,7 @@
  *
  * Any modifications to configuration items should be done through an instance of this object
  *
- * @package    Mamuph
+ * @package    Mamuph Config
  * @category   Configuration
  * @author     Kohana Team
  * @copyright  (c) 2012-2014 Kohana Team
@@ -31,6 +31,7 @@ class Core_Config_Group extends ArrayObject {
      */
     protected $_group_name = '';
 
+
     /**
      * Constructs the group object.  Core_Config passes the config group
      * and its config items to the object here.
@@ -47,8 +48,11 @@ class Core_Config_Group extends ArrayObject {
         parent::__construct($config, ArrayObject::ARRAY_AS_PROPS);
     }
 
+
     /**
      * Return the current group in serialized form.
+     *
+     * @example
      *
      *     echo $config;
      *
@@ -58,6 +62,7 @@ class Core_Config_Group extends ArrayObject {
     {
         return serialize($this->getArrayCopy());
     }
+
 
     /**
      * Alias for getArrayCopy()
@@ -69,6 +74,7 @@ class Core_Config_Group extends ArrayObject {
         return $this->getArrayCopy();
     }
 
+
     /**
      * Returns the config group's name
      *
@@ -79,8 +85,11 @@ class Core_Config_Group extends ArrayObject {
         return $this->_group_name;
     }
 
+
     /**
      * Get a variable from the configuration or return the default value.
+     *
+     * @example
      *
      *     $value = $config->get($key);
      *
@@ -93,8 +102,11 @@ class Core_Config_Group extends ArrayObject {
         return $this->offsetExists($key) ? $this->offsetGet($key) : $default;
     }
 
+
     /**
      * Sets a value in the configuration array.
+     *
+     * @example
      *
      *     $config->set($key, $new_value);
      *
@@ -109,9 +121,12 @@ class Core_Config_Group extends ArrayObject {
         return $this;
     }
 
+
     /**
      * Overrides ArrayObject::offsetSet()
      * This method is called when config is changed via
+     *
+     * @example
      *
      *     $config->var = 'asd';
      *

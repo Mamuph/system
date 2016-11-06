@@ -4,7 +4,7 @@
 /**
  * Log writer abstract class. All [Log] writers must extend this class.
  *
- * @package     Mamuph
+ * @package     Mamuph Log
  * @category    Log
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team

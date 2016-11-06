@@ -5,7 +5,7 @@
  * File-based configuration reader. Multiple configuration directories can be
  * used by attaching multiple instances of this class to [Core_Config].
  *
- * @package    Mamuph
+ * @package    Mamuph Config
  * @category   Configuration
  * @author     Kohana Team
  * @copyright  (c) 2009-2012 Kohana Team
@@ -18,6 +18,7 @@ class Core_Config_File_Reader implements Core_Config_Reader {
      * @var string
      */
     protected $_directory = '';
+
 
     /**
      * Creates a new file reader using the given directory as a config source
@@ -33,11 +34,14 @@ class Core_Config_File_Reader implements Core_Config_Reader {
     /**
      * Load and merge all of the configuration files in this group.
      *
-     *     $config->load($name);
+     * @example
+     *
+     *      $config->load($name);
      *
      * @param   string  $group  configuration group name
      * @return  $this   current object
-     * @uses    Kohana::load
+     * @uses    Apprunner::find_file to find file
+     * @uses    Apprunner::includes to include file
      */
     public function load($group)
     {

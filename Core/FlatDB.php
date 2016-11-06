@@ -3,7 +3,7 @@
 /**
  * Abstract controller class.
  *
- * @package     Mamuph
+ * @package     Mamuph FlatDB
  * @category    FlatDB
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
@@ -24,6 +24,8 @@ abstract class Core_FlatDB
 
     /**
      * Get the singleton instance of this class and enable writing at shutdown.
+     *
+     * @example
      *
      *     $flatdb = FlatDB::instance();
      *
@@ -48,6 +50,8 @@ abstract class Core_FlatDB
     /**
      * Attaches a driver
      *
+     * @example
+     *
      *     $flatdb->attach($driver);
      *
      * @param   FlatDB_Driver   $driver     instance
@@ -64,6 +68,8 @@ abstract class Core_FlatDB
 
     /**
      * Detaches a driver. The same driver object must be used.
+     *
+     * @example
      *
      *     $flatdb->detach($driver);
      *

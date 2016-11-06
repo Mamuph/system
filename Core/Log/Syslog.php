@@ -4,7 +4,7 @@
 /**
  * Syslog log writer.
  *
- * @package     Mamuph
+ * @package     Mamuph Log
  * @category    Log
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team

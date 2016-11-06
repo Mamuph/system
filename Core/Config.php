@@ -11,7 +11,7 @@
  * Directives from sources high in the sources list will override ones from those
  * below them.
  *
- * @package    Mamuph
+ * @package    Mamuph Config
  * @category   Configuration
  * @author     Kohana Team and Mamuph Team
  * @copyright  (c) 2009-2012 Kohana Team
@@ -38,6 +38,8 @@ class Core_Config {
     /**
      * Get the singleton instance of this class and enable writing at shutdown.
      *
+     * @example
+     *
      *     $config = Config::instance();
      *
      * @param   string  $name   Instance name
@@ -59,6 +61,8 @@ class Core_Config {
      * Attach a configuration reader. By default, the reader will be added as
      * the first used reader. However, if the reader should be used only when
      * all other readers fail, use `FALSE` for the second parameter.
+     *
+     * @example
      *
      *     $config->attach($reader);        // Try first
      *     $config->attach($reader, FALSE); // Try last
@@ -90,6 +94,8 @@ class Core_Config {
     /**
      * Detach a configuration reader.
      *
+     * @example
+     *
      *     $config->detach($reader);
      *
      * @param   Core_Config_Source    $source instance
@@ -112,9 +118,11 @@ class Core_Config {
      * directives found into a single config group.  Any changes made to the config
      * in this group will be mirrored across all writable sources.
      *
+     * @example
+     *
      *     $array = $config->load($name);
      *
-     * See [Kohana_Config_Group] for more info
+     * See [Mamuph_Config_Group] for more info
      *
      * @param   string  $group  configuration group name
      * @return  Core_Config_Group
@@ -181,6 +189,8 @@ class Core_Config {
 
     /**
      * Copy one configuration group to all of the other writers.
+     *
+     * @example
      *
      *     $config->copy($name);
      *

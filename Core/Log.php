@@ -4,7 +4,7 @@
 /**
  * Abstract controller class.
  *
- * @package     Mamuph
+ * @package     Mamuph Log
  * @category    Log
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
@@ -43,6 +43,8 @@ abstract class Core_Log
     /**
      * Get the singleton instance of this class and enable writing at shutdown.
      *
+     * @example
+     *
      *     $log = Log::instance();
      *
      * @param   string  $name   Instance name
@@ -66,6 +68,8 @@ abstract class Core_Log
     /**
      * Attaches a log writer, and optionally limits the levels of messages that
      * will be written by the writer.
+     *
+     * @example
      *
      *     $log->attach($writer);
      *
@@ -94,6 +98,8 @@ abstract class Core_Log
     /**
      * Detaches a log writer. The same writer object must be used.
      *
+     * @example
+     *
      *     $log->detach($writer);
      *
      * @param   Log_Writer  $writer instance
@@ -111,6 +117,8 @@ abstract class Core_Log
     /**
      * Adds a message to the log. Replacement values must be passed in to be
      * replaced using [strtr](http://php.net/strtr).
+     *
+     * @example
      *
      *     $log->add(Log::ERROR, 'Could not locate user: :user', array(
      *         ':user' => $username,
@@ -179,6 +187,8 @@ abstract class Core_Log
 
     /**
      * Write and clear all of the messages.
+     *
+     * @example
      *
      *     $log->write();
      *
