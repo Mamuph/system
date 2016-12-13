@@ -168,7 +168,7 @@ class Core_File
     public static function deltree($directory, $recursive = true, $flag = File::EXCLUDE_BLOCK)
     {
 
-        if (realpath($directory) == '/')
+        if (realpath($directory) === '/')
             throw new Exception("Operation not allowed");
 
         // Block files cannot be copied
