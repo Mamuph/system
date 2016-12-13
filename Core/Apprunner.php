@@ -15,8 +15,10 @@ abstract class Core_Apprunner
     // Default namespace prefix
     const NAMESPACE_PREFIX = 'Mamuph\\';
 
+
     // Mamuph core version
     const VERSION = '1.9';
+
 
     // Environment constants (Can be used as bitmask)
     const DEVELOPMENT   = 0b0001;
@@ -24,9 +26,27 @@ abstract class Core_Apprunner
     const STAGING       = 0b0100;
     const PRODUCTION    = 0b1000;
 
+
     // Default exit codes
-    const EXIT_SUCCESS   = 0;
-    const EXIT_FAILURE   = 1;
+    // @See: https://linux.die.net/include/sysexits.h
+    const EXIT_SUCCESS          = 0;    // Successful termination (Everything is ok)
+    const EXIT_FAILURE          = 1;    // Catchall for general errors
+    const EXIT_USAGE            = 64;   // Command line usage error
+    const EXIT_DATAERR          = 65;   // Data format error
+    const EXIT_NOINPUT          = 66;   // Cannot open input
+    const EXIT_NOUSER           = 67;   // Address unknown
+    const EXIT_NOHOST           = 68;   // Host name unknown
+    const EXIT_UNAVAILABLE      = 69;   // Service unavailable
+    const EXIT_SOFTWARE         = 70;   // Internal software error
+    const EXIT_OSERR            = 71;   // System error
+    const EXIT_OSFILE           = 72;   // Critical OS file missing
+    const EXIT_CANTCREAT        = 73;   // Cant't create output file
+    const EXIT_IOERR            = 74;   // Input/Output error
+    const EXIT_TEMPFAIL         = 75;   // Temp failure
+    const EXIT_PROTOCOL         = 76;   // Remote error in protocol
+    const EXIT_NOPERM           = 77;   // Permission denied
+    const EXIT_CONFIG           = 78;   // Configuration error
+
 
 
     /**
@@ -364,7 +384,7 @@ abstract class Core_Apprunner
 
 
     /**
-     * Terminate program and return an exit code.
+     * Terminate the program execution and return an exit code.
      *
      * @example
      *

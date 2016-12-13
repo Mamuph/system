@@ -30,7 +30,7 @@ abstract class Core_FlatDB
      *     $flatdb = FlatDB::instance();
      *
      * @param   string  $name   Instance name
-     * @return  FlatDB'
+     * @return  FlatDB
      */
     public static function instance($name = 'default')
     {
@@ -73,10 +73,9 @@ abstract class Core_FlatDB
      *
      *     $flatdb->detach($driver);
      *
-     * @param   FlatDB_Driver  $driver instance
      * @return  FlatDB
      */
-    public function detach(FlatDB_Driver $driver)
+    public function detach()
     {
         // Remove the writer
         unset($this->_driver);
@@ -94,7 +93,7 @@ abstract class Core_FlatDB
      */
     public function read($path = null, $default = null)
     {
-        return $path === null ? $this->_driver->data  : Arr::path($this->_driver->data, $path, $default);
+        return $path === null ? $this->_driver->data : Arr::path($this->_driver->data, $path, $default);
     }
 
 

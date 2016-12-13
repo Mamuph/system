@@ -31,7 +31,7 @@ class Core_FlatDB_JSON extends FlatDB_Driver
         // Open file if exists
         if (File::exists($this->_datafile_path))
         {
-            $this->data = file_get_contents(json_decode($this->_datafile_path));
+            $this->data = json_decode(file_get_contents($this->_datafile_path), true);
 
             if ($this->data === false)
                 throw new ErrorException('Unable to open ' . $this->_datafile_path);

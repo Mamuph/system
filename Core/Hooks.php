@@ -87,8 +87,6 @@ abstract class Core_Hooks
                 {
                     $signal = str_replace('UNIX_', '', $hookname);
 
-                    //echo constant($signal) . "=$hookname|";
-
                     if (defined($signal))
                         pcntl_signal(constant($signal), array($this, 'notify_signal'));
 

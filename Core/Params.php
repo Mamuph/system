@@ -29,9 +29,9 @@ class Core_Params
 
 
     /**
-     * Process the argument list according the arguments definition
+     * Process the argument list according to the arguments definition
      *
-     * @param array $definitions
+     * @param array     $definitions    The argument definition list
      */
     public static function process(array $definitions)
     {
@@ -74,7 +74,7 @@ class Core_Params
     /**
      * Get parameter value
      *
-     * @param $param
+     * @param string    $param
      * @return array|bool
      */
     public static function get($param = null)
@@ -92,9 +92,10 @@ class Core_Params
 
     /**
      * Set a parameter value outside the command line
-     * @param $param
-     * @param $value
-     * @return mixed
+     *
+     * @param string    $param  The parameter name
+     * @param string     $value  The parameter value
+     * @return string
      */
     public static function set($param, $value)
     {

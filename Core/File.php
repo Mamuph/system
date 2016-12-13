@@ -32,27 +32,31 @@ class Core_File
 
 
     /**
-     * Get a list of files from a specified directory
+     * List files and directories from a specified directory
      *
-     * @param string     $path              Path
+     * @param string     $path              Directory path
      * @param bool       $get_fullpath      Return full path (Default: false)
-     * @param int        $flag              Exclusion type (Default: File::EXCLUDE_BLOCK)
+     * @param int        $flag              List flags (Default: File::EXCLUDE_BLOCK)
      * @param int        $sorting_order     Sorting order (Default: SCANDIR_SORT_ASCENDING)
-     * @return array|bool
+     * @return array
      *
      * @link http://php.net/manual/en/function.scandir.php
      */
     public static function ls($path, $get_fullpath = false, $flag = File::EXCLUDE_BLOCK, $sorting_order = SCANDIR_SORT_ASCENDING)
     {
 
+        // Replace home symbol
+        if ($path[0] === '~')
+            $path = preg_replace('/~/', File::home(), $path, 1);
+
         $files = scandir($path, $sorting_order);
 
+        $filtered_files = [];
 
         // No files, then there is nothing to do
         if (empty($files) || count($files) === 0)
-            return false;
+            return $filtered_files;
 
-        $filtered_files = [];
 
         foreach ($files as $file)
         {
@@ -104,7 +108,7 @@ class Core_File
 
 
     /**
-     * Check if file exists
+     * Check if file or directory exists
      *
      * @example
      *
@@ -152,7 +156,7 @@ class Core_File
 
 
     /**
-     * Delete a directory and their included content.
+     * Delete a directory recursively
      * Take care when you use this method :)
      *
      * @param   string  $directory  Directory path
@@ -218,6 +222,9 @@ class Core_File
         // Block files cannot be copied
         $flag = $flag | File::EXCLUDE_BLOCK;
 
+        // Do not use the recursive flag
+        $flag = $flag & ~File::LIST_RECURSIVE;
+
 
         // Copy all the files
         if (basename($source) === '*')
@@ -271,7 +278,7 @@ class Core_File
 
             $dest = $dest . DS . basename($source);
 
-            if (!mkdir($dest, $permissions))
+            if (!@mkdir($dest, $permissions))
                 return false;
         }
 
@@ -283,5 +290,16 @@ class Core_File
 
         return true;
 
+    }
+
+
+    /**
+     * Return the home directory
+     *
+     * @return string
+     */
+    public static function home()
+    {
+        return getenv('HOME');
     }
 }
