@@ -32,7 +32,7 @@ abstract class Core_FlatDB
      * @param   string  $name   Instance name
      * @return  FlatDB
      */
-    public static function instance($name = 'default')
+    public static function  instance($name = 'default')
     {
         if (empty(FlatDB::$_instance[$name]))
         {

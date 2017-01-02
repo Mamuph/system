@@ -14,7 +14,7 @@
  * @package    Mamuph Config
  * @category   Configuration
  * @author     Kohana Team and Mamuph Team
- * @copyright  (c) 2009-2012 Kohana Team
+ * @copyright  (c) 2009-2016 Kohana Team
  * @license    http://kohanaframework.org/license
  */
 class Core_Config {

@@ -4,20 +4,20 @@ declare(ticks = 1);
 
 
 /**
- * Hooks controller class based in the observed pattern.
+ * Hook controller class based in the observed pattern.
  *
  * @package     Mamuph Hooks
- * @category    Hooks
+ * @category    Hook
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
  */
 
-abstract class Core_Hooks
+abstract class Core_Hook
 {
 
 
     /**
-     * @var  Hooks  Singleton instance container
+     * @var  Hook  Singleton instance container
      */
     protected static $_instance = array();
 
@@ -69,7 +69,7 @@ abstract class Core_Hooks
 
 
     /**
-     * Core_Hooks constructor.
+     * Core_Hook constructor.
      *
      * @param   bool    $attach_signals     Attach UNIX signals as hooks into this instance
      */
@@ -103,20 +103,20 @@ abstract class Core_Hooks
      *
      * @example
      *
-     *     $hooks = Hooks::instance();
+     *     $hook = Hook::instance();
      *
      * @param   string  $name   Instance name
-     * @return  Hooks
+     * @return  Hook
      */
     public static function instance($name = 'default', $attach_signals = true)
     {
-        if (empty(Hooks::$_instance[$name]))
+        if (empty(Hook::$_instance[$name]))
         {
             // Create a new instance
-            Hooks::$_instance[$name] = new Hooks($attach_signals);
+            Hook::$_instance[$name] = new Hook($attach_signals);
         }
 
-        return Hooks::$_instance[$name];
+        return Hook::$_instance[$name];
     }
 
 
@@ -156,15 +156,15 @@ abstract class Core_Hooks
      *
      * @example
      *
-     *      Hooks::instance()->attach('MY_EVENT', function($args) { echo "Hey, event raised"; }, 'my_event');
+     *      Hook::instance()->attach('MY_EVENT', function($args) { echo "Hey, event raised"; }, 'my_event');
      *
      *      // Or call method from current class
      *
-     *      Hooks::instance()->attach('MY_EVENT', array($this, 'raise_event'), 'my_event');
+     *      Hook::instance()->attach('MY_EVENT', array($this, 'raise_event'), 'my_event');
      *
      *      // Or call a single function
      *
-     *      Hooks::instance()->attach('MY_EVENT', 'raise_event', 'my_event');
+     *      Hook::instance()->attach('MY_EVENT', 'raise_event', 'my_event');
      *
      * @param string    $hookname   The hook name
      * @param string|callable $method   Method that is called when the hook is raised
@@ -189,13 +189,13 @@ abstract class Core_Hooks
      * @example
      *
      *      // Detach all the observes from a specific hook
-     *      Hooks::instance()->detach('MY_EVENT');
+     *      Hook::instance()->detach('MY_EVENT');
      *
      *      // Detach an observer from a specific hook
-     *      Hooks::instance()->detach('MY_EVENT', 'my_event');
+     *      Hook::instance()->detach('MY_EVENT', 'my_event');
      *
      *      // Detach one or more observers from a specific hook using the observer method as reference
-     *      Hooks::instance()->detach('MY_EVENT', null, 'raise_event');
+     *      Hook::instance()->detach('MY_EVENT', null, 'raise_event');
      *
      * @param   string            $hookname   The hook name
      * @param   string            $id         The attachment ID (Optional)
@@ -261,13 +261,13 @@ abstract class Core_Hooks
      * @example
      *
      *      // Check if at least one observer is attached to a hook
-     *      Hooks::instance()->was_attached('MY_EVENT');
+     *      Hook::instance()->was_attached('MY_EVENT');
      *
      *      // Check if a specific observer is attached to a hook (Search by hook-observer ID)
-     *      Hooks::instance()->was_attached('MY_EVENT', 'my_event');
+     *      Hook::instance()->was_attached('MY_EVENT', 'my_event');
      *
      *      // Check if a specific observer is attached to a hook (Search by observer method)
-     *      Hooks::instance()->was_attached('MY_EVENT', null, 'raise_event');
+     *      Hook::instance()->was_attached('MY_EVENT', null, 'raise_event');
      *
      * @param   string      $hookname
      * @param   null        $id
@@ -281,11 +281,11 @@ abstract class Core_Hooks
         {
 
             if (empty($id) && empty($method))
-                return empty($this->hooks[$hookname]);
+                return isset($this->hooks[$hookname]) && count($this->hooks[$hookname]);
 
 
             if (!empty($id))
-                return empty($this->hooks[$hookname][$id]);
+                return isset($this->hooks[$hookname][$id]);
 
             $attached = false;
 
@@ -352,7 +352,7 @@ abstract class Core_Hooks
      *
      * @example
      *
-     *      Hooks::instance()->notify('MY_EVENT', 'argument');
+     *      Hook::instance()->notify('MY_EVENT', 'argument');
      *
      * @param   string    $hookname
      * @param   mixed     $parameters
