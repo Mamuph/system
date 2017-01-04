@@ -384,6 +384,24 @@ abstract class Core_Apprunner
 
 
     /**
+     * Non-blocking version of sleep
+     *
+     * @param $seconds
+     */
+    public static function sleep($seconds)
+    {
+
+        $stop_time = time() + $seconds;
+
+        while (time() < $stop_time)
+        {
+            if (function_exists('pcntl_signal_dispatch'))
+                pcntl_signal_dispatch();
+        }
+    }
+
+
+    /**
      * Terminate the program execution and return an exit code.
      *
      * @example
