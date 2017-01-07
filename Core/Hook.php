@@ -139,7 +139,7 @@ abstract class Core_Hook
             {
                 $signal_cons = str_replace('UNIX_', '', $hookname);
 
-                if (constant($signal_cons) === $signal)
+                if (defined($signal_cons) && constant($signal_cons) === $signal)
                 {
                     $this->notify($hookname, $signal);
                     break;
