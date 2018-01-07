@@ -19,12 +19,12 @@ class Core_Log_StdErr extends Log_Writer
      * @param   array   $messages
      * @return  void
      */
-    public function write(array $messages)
+    public function write(array $messages) : void
     {
         foreach ($messages as $message)
         {
             // Writes out each message
-            fwrite(STDERR, $this->format_message($message).PHP_EOL);
+            fwrite(STDERR, $this->formatMessage($message).PHP_EOL);
         }
     }
 

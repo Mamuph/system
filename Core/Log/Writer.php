@@ -7,29 +7,23 @@
  * @package     Mamuph Log
  * @category    Log
  * @author      Mamuph Team
- * @copyright   (c) 2015-2016 Mamuph Team
+ * @copyright   (c) 2015-2017 Mamuph Team
  */
 abstract class Core_Log_Writer
 {
     /**
      * @var  string  timestamp format for log entries.
      *
-     * Defaults to Date::$timestamp_format
+     * Defaults timestamp format
      */
-    public static $timestamp;
+    public static $timestamp_format;
 
-    /**
-     * @var  string  timezone for log entries
-     *
-     * Defaults to Date::$timezone, which defaults to date_default_timezone_get()
-     */
-    public static $timezone;
 
     /**
      * Numeric log level to string lookup table.
      * @var array
      */
-    protected $_log_levels = array(
+    protected $_log_levels = [
         LOG_EMERG   => 'EMERGENCY',
         LOG_ALERT   => 'ALERT',
         LOG_CRIT    => 'CRITICAL',
@@ -38,12 +32,14 @@ abstract class Core_Log_Writer
         LOG_NOTICE  => 'NOTICE',
         LOG_INFO    => 'INFO',
         LOG_DEBUG   => 'DEBUG',
-    );
+    ];
+
 
     /**
      * @var  int  Level to use for stack traces
      */
     public static $strace_level = LOG_DEBUG;
+
 
     /**
      * Write an array of messages.
@@ -53,7 +49,8 @@ abstract class Core_Log_Writer
      * @param   array   $messages
      * @return  void
      */
-    abstract public function write(array $messages);
+    abstract public function write(array $messages) : void;
+
 
     /**
      * Allows the writer to have a unique key when stored.
@@ -67,6 +64,7 @@ abstract class Core_Log_Writer
         return spl_object_hash($this);
     }
 
+
     /**
      * Formats a log entry.
      *
@@ -74,10 +72,11 @@ abstract class Core_Log_Writer
      * @param   string  $format
      * @return  string
      */
-    public function format_message(array $message, $format = "time --- level: body in file:line")
+    public function formatMessage(array $message, $format = "time --- level: body in file:line") : string
     {
-        $message['time'] =
-        $message['time'] = Date::formatted_time('@'.$message['time'], Log_Writer::$timestamp, Log_Writer::$timezone);
+        $time = new DateTime('@' . $message['time']);
+
+        $message['time'] = $time->format(Log_Writer::$timestamp_format);
         $message['level'] = $this->_log_levels[$message['level']];
 
         $string = strtr($format, array_filter($message, 'is_scalar'));
@@ -88,7 +87,7 @@ abstract class Core_Log_Writer
             $message['body'] = $message['additional']['exception']->getTraceAsString();
             $message['level'] = $this->_log_levels[Log_Writer::$strace_level];
 
-            $string .= PHP_EOL.strtr($format, array_filter($message, 'is_scalar'));
+            $string .= PHP_EOL . strtr($format, array_filter($message, 'is_scalar'));
         }
 
         return $string;

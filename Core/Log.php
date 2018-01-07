@@ -7,11 +7,19 @@
  * @package     Mamuph Log
  * @category    Log
  * @author      Mamuph Team
- * @copyright   (c) 2015-2016 Mamuph Team
+ * @copyright   (c) 2015-2017 Mamuph Team
+ *
+ * @method static Log   emergency(string $message, array $values = null, string $instance = 'default')
+ * @method static Log   alert(string $message, array $values = null, string $instance = 'default')
+ * @method static Log   critical(string $message, array $values = null, string $instance = 'default')
+ * @method static Log   error(string $message, array $values = null, string $instance = 'default')
+ * @method static Log   warning(string $message, array $values = null, string $instance = 'default')
+ * @method static Log   notice(string $message, array $values = null, string $instance = 'default')
+ * @method static Log   info(string $message, array $values = null, string $instance = 'default')
+ * @method static Log   debug(string $message, array $values = null, string $instance = 'default')
  *
  */
-
-abstract class Core_Log
+abstract class Core_Log implements Core_Contract_Log
 {
 
     // Log message levels - Windows users see PHP Bug #18090
@@ -27,17 +35,17 @@ abstract class Core_Log
     /**
      * @var  Log  Singleton instance container
      */
-    protected static $_instance = array();
+    protected static $_instance = [];
 
     /**
      * @var  array  list of added messages
      */
-    protected $_messages = array();
+    protected $_messages = [];
 
     /**
      * @var  array  list of log writers
      */
-    protected $_writers = array();
+    protected $_writers = [];
 
 
     /**
@@ -47,13 +55,13 @@ abstract class Core_Log
      *
      *     $log = Log::instance();
      *
-     * @param   string  $name   Instance name
-     * @return  Log
+     * @param   string $name Instance name
+     * @return  Core_Contract_Log
      */
-    public static function instance($name = 'default')
+    public static function instance(string $name = 'default') : Core_Contract_Log
     {
-        if (empty(Log::$_instance[$name]))
-        {
+
+        if (empty(Log::$_instance[$name])) {
             // Create a new instance
             Log::$_instance[$name] = new Log;
 
@@ -66,6 +74,34 @@ abstract class Core_Log
 
 
     /**
+     * Call static helpers
+     *
+     * @param string $name
+     * @param array $arguments
+     */
+    public static function __callStatic(string $name, array $arguments) : void
+    {
+
+        // At least one argument is required
+        if (empty($arguments)) return;
+
+        $name = strtoupper($name);
+
+        $that = new ReflectionClass(static::class);
+        $levels = array_keys($that->getConstants());
+
+        if (in_array(strtoupper($name), $levels))
+        {
+            static::instance(empty($arguments[2]) ? 'default' : $arguments[2])->add(
+              constant(static::class . '::' . $name),
+              $arguments[0],
+              empty($arguments[1]) ? [] : $arguments
+            );
+        }
+    }
+
+
+    /**
      * Attaches a log writer, and optionally limits the levels of messages that
      * will be written by the writer.
      *
@@ -73,23 +109,23 @@ abstract class Core_Log
      *
      *     $log->attach($writer);
      *
-     * @param   Log_Writer  $writer     instance
-     * @param   mixed       $levels     array of messages levels to write OR max level to write
-     * @param   integer     $min_level  min level to write IF $levels is not an array
-     * @return  Log
+     * @param   Log_Writer $writer instance
+     * @param   mixed $levels array of messages levels to write OR max level to write
+     * @param   int $min_level min level to write IF $levels is not an array
+     * @return  Core_Contract_Log
      */
-    public function attach(Log_Writer $writer, $levels = array(), $min_level = 0)
+    public function attach(Log_Writer $writer, $levels = [], int $min_level = 0) : Core_Contract_Log
     {
-        if ( ! is_array($levels))
-        {
+
+        if (!is_array($levels)) {
             $levels = range($min_level, $levels);
         }
 
-        $this->_writers["{$writer}"] = array
-        (
+        $this->_writers["{$writer}"] =
+          [
             'object' => $writer,
             'levels' => $levels
-        );
+          ];
 
         return $this;
     }
@@ -102,11 +138,12 @@ abstract class Core_Log
      *
      *     $log->detach($writer);
      *
-     * @param   Log_Writer  $writer instance
-     * @return  Log
+     * @param   Log_Writer $writer instance
+     * @return  Core_Contract_Log
      */
-    public function detach(Log_Writer $writer)
+    public function detach(Log_Writer $writer) : Core_Contract_Log
     {
+
         // Remove the writer
         unset($this->_writers["{$writer}"]);
 
@@ -124,59 +161,49 @@ abstract class Core_Log
      *         ':user' => $username,
      *     ));
      *
-     * @param   string  $level       level of message
-     * @param   string  $message     message body
-     * @param   array   $values      values to replace in the message
-     * @param   array   $additional  additional custom parameters to supply to the log writer
-     * @return  Log
+     * @param   string $level level of message
+     * @param   string $message message body
+     * @param   array $values values to replace in the message
+     * @param   array $additional additional custom parameters to supply to the log writer
+     * @return  Core_Contract_Log
      */
-    public function add($level, $message, array $values = NULL, array $additional = NULL)
+    public function add(
+      string $level,
+      string $message,
+      array $values = null,
+      array $additional = null
+    ) : Core_Contract_Log
     {
-        if ($values)
-        {
+
+        if ($values) {
             // Insert the values into the message
             $message = strtr($message, $values);
         }
 
         // Grab a copy of the trace
-        if (isset($additional['exception']))
-        {
+        if (isset($additional['exception'])) {
             $trace = $additional['exception']->getTrace();
-        }
-        else
-        {
-            // Older php version don't have 'DEBUG_BACKTRACE_IGNORE_ARGS', so manually remove the args from the backtrace
-            if ( ! defined('DEBUG_BACKTRACE_IGNORE_ARGS'))
-            {
-                $trace = array_map(function ($item) {
-                    unset($item['args']);
-                    return $item;
-                }, array_slice(debug_backtrace(FALSE), 1));
-            }
-            else
-            {
-                $trace = array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 1);
-            }
+        } else {
+            $trace = array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 1);
         }
 
-        if ($additional == NULL)
-        {
-            $additional = array();
+        if ($additional == null) {
+            $additional = [];
         }
 
         // Create a new message
-        $this->_messages[] = array
-        (
-            'time'       => time(),
-            'level'      => $level,
-            'body'       => $message,
-            'trace'      => $trace,
-            'file'       => isset($trace[0]['file']) ? $trace[0]['file'] : NULL,
-            'line'       => isset($trace[0]['line']) ? $trace[0]['line'] : NULL,
-            'class'      => isset($trace[0]['class']) ? $trace[0]['class'] : NULL,
-            'function'   => isset($trace[0]['function']) ? $trace[0]['function'] : NULL,
-            'additional' => $additional,
-        );
+        $this->_messages[] =
+        [
+          'time'       => time(),
+          'level'      => $level,
+          'body'       => $message,
+          'trace'      => $trace,
+          'file'       => isset($trace[0]['file'])     ? $trace[0]['file'] : null,
+          'line'       => isset($trace[0]['line'])     ? $trace[0]['line'] : null,
+          'class'      => isset($trace[0]['class'])    ? $trace[0]['class'] : null,
+          'function'   => isset($trace[0]['function']) ? $trace[0]['function'] : null,
+          'additional' => $additional,
+        ];
 
         // Write logs as they are added
         $this->write();
@@ -194,10 +221,10 @@ abstract class Core_Log
      *
      * @return  void
      */
-    public function write()
+    public function write() : void
     {
-        if (empty($this->_messages))
-        {
+
+        if (empty($this->_messages)) {
             // There is nothing to write, move along
             return;
         }
@@ -206,24 +233,19 @@ abstract class Core_Log
         $messages = $this->_messages;
 
         // Reset the messages array
-        $this->_messages = array();
+        $this->_messages = [];
 
-        foreach ($this->_writers as $writer)
-        {
-            if (empty($writer['levels']))
-            {
+        foreach ($this->_writers as $writer) {
+
+            if (empty($writer['levels'])) {
                 // Write all of the messages
                 $writer['object']->write($messages);
-            }
-            else
-            {
+            } else {
                 // Filtered messages
-                $filtered = array();
+                $filtered = [];
 
-                foreach ($messages as $message)
-                {
-                    if (in_array($message['level'], $writer['levels']))
-                    {
+                foreach ($messages as $message) {
+                    if (in_array($message['level'], $writer['levels'])) {
                         // Writer accepts this kind of message
                         $filtered[] = $message;
                     }

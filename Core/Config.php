@@ -13,26 +13,28 @@
  *
  * @package    Mamuph Config
  * @category   Configuration
- * @author     Kohana Team and Mamuph Team
- * @copyright  (c) 2009-2016 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @author     Mamuph Team
+ * @copyright  (c) 2008-2017 Mamuph Team
  */
-class Core_Config {
+abstract class Core_Config implements Core_Contract_Config
+{
 
     /**
      * @var  Config  Singleton instance container
      */
-    protected static $_instance = array();
+    protected static $_instance = [];
+
 
     /**
      * @var array   Configuration readers
      */
-    protected $_sources = array();
+    protected $_sources = [];
+
 
     /**
      * @var array   Configuration readers
      */
-    protected $_groups = array();
+    protected $_groups = [];
 
 
     /**
@@ -42,13 +44,12 @@ class Core_Config {
      *
      *     $config = Config::instance();
      *
-     * @param   string  $name   Instance name
-     * @return  Config
+     * @param   string $name Instance name
+     * @return  Core_Contract_Config
      */
-    public static function instance($name = 'default')
+    public static function instance(string $name = 'default') : Core_Contract_Config
     {
-        if (empty(Config::$_instance[$name]))
-        {
+        if (empty(Config::$_instance[$name])) {
             // Create a new instance
             Config::$_instance[$name] = new Config;
         }
@@ -67,25 +68,22 @@ class Core_Config {
      *     $config->attach($reader);        // Try first
      *     $config->attach($reader, FALSE); // Try last
      *
-     * @param   Core_Config_Source    $source instance
-     * @param   boolean                 $first  add the reader as the first used object
-     * @return  $this
+     * @param   Core_Config_Contract_Source $source instance
+     * @param   boolean $first add the reader as the first used object
+     * @return  Core_Contract_Config
      */
-    public function attach(Core_Config_Source $source, $first = TRUE)
+    public function attach(Core_Config_Contract_Source $source, $first = true) : Core_Contract_Config
     {
-        if ($first === TRUE)
-        {
+        if ($first === true) {
             // Place the reader at the top of the stack
             array_unshift($this->_sources, $source);
-        }
-        else
-        {
+        } else {
             // Place the reader at the bottom of the stack
             $this->_sources[] = $source;
         }
 
         // Clear any cached _groups
-        $this->_groups = array();
+        $this->_groups = [];
 
         return $this;
     }
@@ -98,15 +96,38 @@ class Core_Config {
      *
      *     $config->detach($reader);
      *
-     * @param   Core_Config_Source    $source instance
-     * @return  $this
+     * @param   Core_Config_Contract_Source $source instance
+     * @return  Core_Contract_Config
      */
-    public function detach(Core_Config_Source $source)
+    public function detach(Core_Config_Contract_Source $source) : Core_Contract_Config
     {
-        if (($key = array_search($source, $this->_sources)) !== FALSE)
-        {
+        if (($key = array_search($source, $this->_sources)) !== false) {
             // Remove the writer
             unset($this->_sources[$key]);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * Copy one configuration group to all of the other writers.
+     *
+     * @example
+     *
+     *     $config->copy($name);
+     *
+     * @param   string $group configuration group name
+     * @return  Core_Contract_Config
+     * @throws \Exception
+     */
+    public function copy(string $group) : Core_Contract_Config
+    {
+        // Load the configuration group
+        $config = $this->load($group);
+
+        foreach ($config->asArray() as $key => $value) {
+            $this->writeConfig($group, $key, $value);
         }
 
         return $this;
@@ -122,55 +143,46 @@ class Core_Config {
      *
      *     $array = $config->load($name);
      *
-     * See [Mamuph_Config_Group] for more info
+     * See [Core_Config_Contract_Group] for more info
      *
-     * @param   string  $group  configuration group name
-     * @return  Core_Config_Group
+     * @param   string $group configuration group name
+     * @return  Core_Config_Contract_Group
      * @throws  Exception
      */
-    public function load($group)
+    public function load($group) : Core_Config_Contract_Group
     {
-        if ( ! count($this->_sources))
-        {
+        if (!count($this->_sources)) {
             throw new Exception('No configuration sources attached');
         }
 
-        if (empty($group))
-        {
+        if (empty($group)) {
             throw new Exception("Need to specify a config group");
         }
 
-        if ( ! is_string($group))
-        {
+        if (!is_string($group)) {
             throw new Exception("Config group must be a string");
         }
 
-        if (strpos($group, '.') !== FALSE)
-        {
+        if (strpos($group, '.') !== false) {
             // Split the config group and path
             list($group, $path) = explode('.', $group, 2);
         }
 
-        if (isset($this->_groups[$group]))
-        {
-            if (isset($path))
-            {
-                return Arr::path($this->_groups[$group], $path, NULL, '.');
+        if (isset($this->_groups[$group])) {
+            if (isset($path)) {
+                return Arr::path($this->_groups[$group], $path, null, '.');
             }
             return $this->_groups[$group];
         }
 
-        $config = array();
+        $config = [];
 
         // We search from the "lowest" source and work our way up
         $sources = array_reverse($this->_sources);
 
-        foreach ($sources as $source)
-        {
-            if ($source instanceof Core_Config_Reader)
-            {
-                if ($source_config = $source->load($group))
-                {
+        foreach ($sources as $source) {
+            if ($source instanceof Core_Config_Contract_Reader) {
+                if ($source_config = $source->load($group)) {
                     $config = Arr::merge($config, $source_config);
                 }
             }
@@ -178,9 +190,8 @@ class Core_Config {
 
         $this->_groups[$group] = new Config_Group($this, $group, $config);
 
-        if (isset($path))
-        {
-            return Arr::path($config, $path, NULL, '.');
+        if (isset($path)) {
+            return Arr::path($config, $path, null, '.');
         }
 
         return $this->_groups[$group];
@@ -188,43 +199,17 @@ class Core_Config {
 
 
     /**
-     * Copy one configuration group to all of the other writers.
-     *
-     * @example
-     *
-     *     $config->copy($name);
-     *
-     * @param   string  $group  configuration group name
-     * @return  $this
-     */
-    public function copy($group)
-    {
-        // Load the configuration group
-        $config = $this->load($group);
-
-        foreach ($config->as_array() as $key => $value)
-        {
-            $this->_write_config($group, $key, $value);
-        }
-
-        return $this;
-    }
-
-
-    /**
      * Callback used by the config group to store changes made to the writer buffer
      *
-     * @param string    $group  Group name
-     * @param string    $key    Variable name
-     * @param mixed     $value  The new value
-     * @return Core_Config Chainable instance
+     * @param string $group Group name
+     * @param string $key Variable name
+     * @param mixed $value The new value
+     * @return Core_Contract_Config Chainable instance
      */
-    public function _write_config($group, $key, $value)
+    public function writeConfig($group, $key, $value) : Core_Contract_Config
     {
-        foreach ($this->_sources as $source)
-        {
-            if ( ! ($source instanceof Core_Config_Writer))
-            {
+        foreach ($this->_sources as $source) {
+            if (!($source instanceof Core_Config_Contract_Writer)) {
                 continue;
             }
 

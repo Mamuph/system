@@ -8,18 +8,18 @@
  * @author      Mamuph Team
  * @copyright   (c) 2015-2016 Mamuph Team
  */
-abstract class Core_FlatDB
+abstract class Core_FlatDB implements Core_Contract_FlatDB
 {
 
     /**
      * @var  FlatDB  Singleton instance container
      */
-    protected static $_instance = array();
+    protected static $_instance = [];
 
     /**
-     * @var  array  list of drivers
+     * @var  FlatDB_Driver  list of drivers
      */
-    protected $_driver = array();
+    protected $_driver = null;
     
 
     /**
@@ -30,9 +30,9 @@ abstract class Core_FlatDB
      *     $flatdb = FlatDB::instance();
      *
      * @param   string  $name   Instance name
-     * @return  FlatDB
+     * @return  Core_Contract_FlatDB
      */
-    public static function  instance($name = 'default')
+    public static function instance(string $name = 'default') : Core_Contract_FlatDB
     {
         if (empty(FlatDB::$_instance[$name]))
         {
@@ -55,9 +55,9 @@ abstract class Core_FlatDB
      *     $flatdb->attach($driver);
      *
      * @param   FlatDB_Driver   $driver     instance
-     * @return  FlatDB
+     * @return  Core_Contract_FlatDB
      */
-    public function attach(FlatDB_Driver $driver)
+    public function attach(FlatDB_Driver $driver) : Core_Contract_FlatDB
     {
 
         $this->_driver = $driver;
@@ -73,9 +73,9 @@ abstract class Core_FlatDB
      *
      *     $flatdb->detach($driver);
      *
-     * @return  FlatDB
+     * @return  Core_Contract_FlatDB
      */
-    public function detach()
+    public function detach() : Core_Contract_FlatDB
     {
         // Remove the writer
         unset($this->_driver);
@@ -91,7 +91,7 @@ abstract class Core_FlatDB
      * @param mixed     $default    Default value (Optional when path is used)
      * @return mixed
      */
-    public function read($path = null, $default = null)
+    public function read(string $path = null, $default = null)
     {
         return $path === null ? $this->_driver->data : Arr::path($this->_driver->data, $path, $default);
     }
@@ -101,8 +101,9 @@ abstract class Core_FlatDB
      * Write into the memory a data node by path
      *
      * @param mixed     $data
+     * @return void
      */
-    public function write($data)
+    public function write($data) : void
     {
         $this->_driver->data = $data;
     }
@@ -113,7 +114,7 @@ abstract class Core_FlatDB
      *
      * @return bool
      */
-    public function flush()
+    public function flush() : bool
     {
         return empty($this->_driver->data) ? false : $this->_driver->flush();
     }

@@ -7,7 +7,7 @@
  * @package     Mamuph Params Helper
  * @category    Helpers
  * @author      Mamuph Team
- * @copyright   (c) 2015-2016 Mamuph Team
+ * @copyright   (c) 2015-2018 Mamuph Team
  *
  */
 class Core_Version
@@ -20,7 +20,7 @@ class Core_Version
      * @param array $version_info
      * @return string
      */
-    public static function get(Array $version_info)
+    public static function get(array $version_info)
     {
         return sprintf('%d.%d build: %d', $version_info['major'], $version_info['minor'], $version_info['build']);
     }

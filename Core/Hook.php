@@ -1,6 +1,12 @@
 <?php
 // It is required for unix signaling
-declare(ticks = 1);
+if (function_exists('pcntl_async_signals')) {
+    pcntl_async_signals(true);
+} else {
+    // @deprecated in favour of pctnl_async_signals
+    declare(ticks = 1);
+}
+
 
 
 /**
@@ -9,9 +15,8 @@ declare(ticks = 1);
  * @package     Mamuph Hooks
  * @category    Hook
  * @author      Mamuph Team
- * @copyright   (c) 2015-2016 Mamuph Team
+ * @copyright   (c) 2015-2017 Mamuph Team
  */
-
 abstract class Core_Hook
 {
 
@@ -19,7 +24,7 @@ abstract class Core_Hook
     /**
      * @var  Hook  Singleton instance container
      */
-    protected static $_instance = array();
+    protected static $_instance = [];
 
 
     /**
@@ -73,7 +78,7 @@ abstract class Core_Hook
      *
      * @param   bool    $attach_signals     Attach UNIX signals as hooks into this instance
      */
-    public function __construct($attach_signals = true)
+    public function __construct(bool $attach_signals = true)
     {
 
         // @link http://www.ucs.cam.ac.uk/docs/course-notes/unix-courses/Building/files/signals.pdf
@@ -88,14 +93,13 @@ abstract class Core_Hook
                     $signal = str_replace('UNIX_', '', $hookname);
 
                     if (defined($signal))
-                        pcntl_signal(constant($signal), array($this, 'notify_signal'));
+                        pcntl_signal(constant($signal), [$this, '_notifySignal']);
 
                 }
             }
         }
 
     }
-
 
 
     /**
@@ -106,9 +110,10 @@ abstract class Core_Hook
      *     $hook = Hook::instance();
      *
      * @param   string  $name   Instance name
+     * @param   bool    $attach_signals
      * @return  Hook
      */
-    public static function instance($name = 'default', $attach_signals = true)
+    public static function instance(string $name = 'default', bool $attach_signals = true)
     {
         if (empty(Hook::$_instance[$name]))
         {
@@ -120,17 +125,17 @@ abstract class Core_Hook
     }
 
 
-
     /**
      * Notify UNIX signal.
      *
      * Note: This function should be called by the notification method.
      * Do no call this function unless that observes are called manually.
      *
-     * @param   $signal
+     * @param   int $signal
      * @return  void
+     * @throws \Exception
      */
-    public function notify_signal($signal)
+    public function _notifySignal(int $signal) : void
     {
         foreach (array_keys($this->hooks) as $hookname)
         {
@@ -148,7 +153,6 @@ abstract class Core_Hook
             }
         }
     }
-
 
 
     /**
@@ -171,7 +175,7 @@ abstract class Core_Hook
      * @param mixed     $id     The attachment ID, by default a random unique ID is assigned by default when false
      * @return void
      */
-    public function attach($hookname, $method, $id = false)
+    public function attach(string $hookname, $method, $id = false) : void
     {
         $this->add($hookname);
 
@@ -180,7 +184,6 @@ abstract class Core_Hook
 
         $this->hooks[$hookname][$id] = $method;
     }
-
 
 
     /**
@@ -202,7 +205,7 @@ abstract class Core_Hook
      * @param   string|callable   $method     The method name (Optional)
      * @return  bool     True when one or more observers are detached
      */
-    public function detach($hookname, $id = null, $method = null)
+    public function detach(string $hookname, string $id = null, $method = null) : bool
     {
 
         if (array_key_exists($hookname, $this->hooks))
@@ -269,12 +272,12 @@ abstract class Core_Hook
      *      // Check if a specific observer is attached to a hook (Search by observer method)
      *      Hook::instance()->was_attached('MY_EVENT', null, 'raise_event');
      *
-     * @param   string      $hookname
-     * @param   null        $id
-     * @param   null        $method
+     * @param   string          $hookname
+     * @param   string          $id
+     * @param   string|callable $method
      * @return  bool
      */
-    public function was_attached($hookname, $id = null, $method = null)
+    public function wasAttached(string $hookname, string $id = null, $method = null) : bool
     {
 
         if (array_key_exists($hookname, $this->hooks))
@@ -313,14 +316,13 @@ abstract class Core_Hook
     }
 
 
-
     /**
      * Add a new hook to the hooklist
      *
      * @param   string  $hookname   Hook name
      * @return  bool    True when hook is added to the hooklist or false when hook was already added
      */
-    public function add($hookname)
+    public function add(string $hookname) : bool
     {
 
         if (!$this->exists($hookname))
@@ -330,9 +332,7 @@ abstract class Core_Hook
         }
 
         return false;
-
     }
-
 
 
     /**
@@ -341,7 +341,7 @@ abstract class Core_Hook
      * @param   string    $hookname
      * @return  bool
      */
-    public function exists($hookname)
+    public function exists(string $hookname) : bool
     {
         return array_key_exists($hookname, $this->hooks);
     }
@@ -359,7 +359,7 @@ abstract class Core_Hook
      * @return  void
      * @throws  Exception
      */
-    public function notify($hookname, $parameters = null)
+    public function notify(string $hookname, $parameters = null) : void
     {
         if (array_key_exists($hookname, $this->hooks))
         {

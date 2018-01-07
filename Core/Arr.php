@@ -9,243 +9,13 @@
  * @author     Mamuph and Kohana Team
  * @copyright  (c) 2007-2015 Kohana Team
  */
-class Core_Arr {
+class Core_Arr
+{
 
     /**
      * @var  string  default delimiter for path()
      */
     public static $delimiter = '.';
-
-    /**
-     * Tests if an array is associative or not.
-     *
-     * @example
-     *
-     *     // Returns TRUE
-     *     Arr::is_assoc(array('username' => 'john.doe'));
-     *
-     *     // Returns FALSE
-     *     Arr::is_assoc('foo', 'bar');
-     *
-     * @param   array   $array  array to check
-     * @return  boolean
-     */
-    public static function is_assoc(array $array)
-    {
-        // Keys of the array
-        $keys = array_keys($array);
-
-        // If the array keys of the keys match the keys, then the array must
-        // not be associative (e.g. the keys array looked like {0:0, 1:1...}).
-        return array_keys($keys) !== $keys;
-    }
-
-
-    /**
-     * Test if a value is an array with an additional check for array-like objects.
-     *
-     * @example
-     *
-     *     // Returns TRUE
-     *     Arr::is_array(array());
-     *     Arr::is_array(new ArrayObject);
-     *
-     *     // Returns FALSE
-     *     Arr::is_array(FALSE);
-     *     Arr::is_array('not an array!');
-     *     Arr::is_array(Database::instance());
-     *
-     * @param   mixed   $value  value to check
-     * @return  boolean
-     */
-    public static function is_array($value)
-    {
-        if (is_array($value))
-        {
-            // Definitely an array
-            return TRUE;
-        }
-        else
-        {
-            // Possibly a Traversable object, functionally the same as an array
-            return (is_object($value) AND $value instanceof Traversable);
-        }
-    }
-
-
-    /**
-     * Gets a value from an array using a dot separated path.
-     *
-     * @example
-     *
-     *     // Get the value of $array['foo']['bar']
-     *     $value = Arr::path($array, 'foo.bar');
-     *
-     * Using a wildcard "*" will search intermediate arrays and return an array.
-     *
-     *     // Get the values of "color" in theme
-     *     $colors = Arr::path($array, 'theme.*.color');
-     *
-     *     // Using an array of keys
-     *     $colors = Arr::path($array, array('theme', '*', 'color'));
-     *
-     * @param   array   $array      array to search
-     * @param   mixed   $path       key path string (delimiter separated) or array of keys
-     * @param   mixed   $default    default value if the path is not set
-     * @param   string  $delimiter  key path delimiter
-     * @return  mixed
-     */
-    public static function path($array, $path, $default = NULL, $delimiter = NULL)
-    {
-        if ( ! Arr::is_array($array))
-        {
-            // This is not an array!
-            return $default;
-        }
-
-        if (is_array($path))
-        {
-            // The path has already been separated into keys
-            $keys = $path;
-        }
-        else
-        {
-            if (array_key_exists($path, $array))
-            {
-                // No need to do extra processing
-                return $array[$path];
-            }
-
-            if ($delimiter === NULL)
-            {
-                // Use the default delimiter
-                $delimiter = Arr::$delimiter;
-            }
-
-            // Remove starting delimiters and spaces
-            $path = ltrim($path, "{$delimiter} ");
-
-            // Remove ending delimiters, spaces, and wildcards
-            $path = rtrim($path, "{$delimiter} *");
-
-            // Split the keys by delimiter
-            $keys = explode($delimiter, $path);
-        }
-
-        do
-        {
-            $key = array_shift($keys);
-
-            if (ctype_digit($key))
-            {
-                // Make the key an integer
-                $key = (int) $key;
-            }
-
-            if (isset($array[$key]))
-            {
-                if ($keys)
-                {
-                    if (Arr::is_array($array[$key]))
-                    {
-                        // Dig down into the next part of the path
-                        $array = $array[$key];
-                    }
-                    else
-                    {
-                        // Unable to dig deeper
-                        break;
-                    }
-                }
-                else
-                {
-                    // Found the path requested
-                    return $array[$key];
-                }
-            }
-            elseif ($key === '*')
-            {
-                // Handle wildcards
-
-                $values = array();
-                foreach ($array as $arr)
-                {
-                    if ($value = Arr::path($arr, implode('.', $keys)))
-                    {
-                        $values[] = $value;
-                    }
-                }
-
-                if ($values)
-                {
-                    // Found the values requested
-                    return $values;
-                }
-                else
-                {
-                    // Unable to dig deeper
-                    break;
-                }
-            }
-            else
-            {
-                // Unable to dig deeper
-                break;
-            }
-        }
-        while ($keys);
-
-        // Unable to find the value requested
-        return $default;
-    }
-
-    /**
-     * Set a value on an array by path.
-     *
-     * @see Arr::path()
-     * @param array   $array     Array to update
-     * @param string  $path      Path
-     * @param mixed   $value     Value to set
-     * @param string  $delimiter Path delimiter
-     */
-    public static function set_path( & $array, $path, $value, $delimiter = NULL)
-    {
-        if ( ! $delimiter)
-        {
-            // Use the default delimiter
-            $delimiter = Arr::$delimiter;
-        }
-
-        // The path has already been separated into keys
-        $keys = $path;
-        if ( ! is_array($path))
-        {
-            // Split the keys by delimiter
-            $keys = explode($delimiter, $path);
-        }
-
-        // Set current $array to inner-most array path
-        while (count($keys) > 1)
-        {
-            $key = array_shift($keys);
-
-            if (ctype_digit($key))
-            {
-                // Make the key an integer
-                $key = (int) $key;
-            }
-
-            if ( ! isset($array[$key]))
-            {
-                $array[$key] = array();
-            }
-
-            $array = & $array[$key];
-        }
-
-        // Set key on inner-most array
-        $array[array_shift($keys)] = $value;
-    }
 
 
     /**
@@ -256,18 +26,18 @@ class Core_Arr {
      *     // Fill an array with values 5, 10, 15, 20
      *     $values = Arr::range(5, 20);
      *
-     * @param   integer $step   stepping
-     * @param   integer $max    ending number
+     * @param   integer $step stepping
+     * @param   integer $max ending number
      * @return  array
      */
     public static function range($step = 10, $max = 100)
     {
-        if ($step < 1)
-            return array();
+        if ($step < 1) {
+            return [];
+        }
 
-        $array = array();
-        for ($i = $step; $i <= $max; $i += $step)
-        {
+        $array = [];
+        for ($i = $step; $i <= $max; $i += $step) {
             $array[$i] = $i;
         }
 
@@ -287,12 +57,12 @@ class Core_Arr {
      *     // Get the value "sorting" from $GLOBALS, if it exists
      *     $sorting = Arr::get($GLOBALS, 'sorting');
      *
-     * @param   array   $array      array to extract from
-     * @param   string  $key        key name
-     * @param   mixed   $default    default value
+     * @param   array $array array to extract from
+     * @param   string $key key name
+     * @param   mixed $default default value
      * @return  mixed
      */
-    public static function get($array, $key, $default = NULL)
+    public static function get($array, $key, $default = null)
     {
         return isset($array[$key]) ? $array[$key] : $default;
     }
@@ -309,20 +79,198 @@ class Core_Arr {
      *     $data = array('level1' => array('level2a' => 'value 1', 'level2b' => 'value 2'));
      *     Arr::extract($data, array('level1.level2a', 'password'));
      *
-     * @param   array  $array    array to extract paths from
-     * @param   array  $paths    list of path
-     * @param   mixed  $default  default value
+     * @param   array $array array to extract paths from
+     * @param   array $paths list of path
+     * @param   mixed $default default value
      * @return  array
      */
-    public static function extract($array, array $paths, $default = NULL)
+    public static function extract($array, array $paths, $default = null)
     {
-        $found = array();
-        foreach ($paths as $path)
-        {
-            Arr::set_path($found, $path, Arr::path($array, $path, $default));
+        $found = [];
+        foreach ($paths as $path) {
+            Arr::setPath($found, $path, Arr::path($array, $path, $default));
         }
 
         return $found;
+    }
+
+
+    /**
+     * Set a value on an array by path.
+     *
+     * @see Arr::path()
+     * @param array $array Array to update
+     * @param string $path Path
+     * @param mixed $value Value to set
+     * @param string $delimiter Path delimiter
+     */
+    public static function setPath(& $array, $path, $value, $delimiter = null)
+    {
+        if (!$delimiter) {
+            // Use the default delimiter
+            $delimiter = Arr::$delimiter;
+        }
+
+        // The path has already been separated into keys
+        $keys = $path;
+        if (!is_array($path)) {
+            // Split the keys by delimiter
+            $keys = explode($delimiter, $path);
+        }
+
+        // Set current $array to inner-most array path
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+
+            if (ctype_digit($key)) {
+                // Make the key an integer
+                $key = (int)$key;
+            }
+
+            if (!isset($array[$key])) {
+                $array[$key] = [];
+            }
+
+            $array = &$array[$key];
+        }
+
+        // Set key on inner-most array
+        $array[array_shift($keys)] = $value;
+    }
+
+
+    /**
+     * Gets a value from an array using a dot separated path.
+     *
+     * @example
+     *
+     *     // Get the value of $array['foo']['bar']
+     *     $value = Arr::path($array, 'foo.bar');
+     *
+     * Using a wildcard "*" will search intermediate arrays and return an array.
+     *
+     *     // Get the values of "color" in theme
+     *     $colors = Arr::path($array, 'theme.*.color');
+     *
+     *     // Using an array of keys
+     *     $colors = Arr::path($array, array('theme', '*', 'color'));
+     *
+     * @param   array $array array to search
+     * @param   mixed $path key path string (delimiter separated) or array of keys
+     * @param   mixed $default default value if the path is not set
+     * @param   string $delimiter key path delimiter
+     * @return  mixed
+     */
+    public static function path(
+      $array,
+      $path,
+      $default = null,
+      $delimiter = null
+    ) {
+        if (!Arr::isArray($array)) {
+            // This is not an array!
+            return $default;
+        }
+
+        if (is_array($path)) {
+            // The path has already been separated into keys
+            $keys = $path;
+        } else {
+            if (array_key_exists($path, $array)) {
+                // No need to do extra processing
+                return $array[$path];
+            }
+
+            if ($delimiter === null) {
+                // Use the default delimiter
+                $delimiter = Arr::$delimiter;
+            }
+
+            // Remove starting delimiters and spaces
+            $path = ltrim($path, "{$delimiter} ");
+
+            // Remove ending delimiters, spaces, and wildcards
+            $path = rtrim($path, "{$delimiter} *");
+
+            // Split the keys by delimiter
+            $keys = explode($delimiter, $path);
+        }
+
+        do {
+            $key = array_shift($keys);
+
+            if (ctype_digit($key)) {
+                // Make the key an integer
+                $key = (int)$key;
+            }
+
+            if (isset($array[$key])) {
+                if ($keys) {
+                    if (Arr::isArray($array[$key])) {
+                        // Dig down into the next part of the path
+                        $array = $array[$key];
+                    } else {
+                        // Unable to dig deeper
+                        break;
+                    }
+                } else {
+                    // Found the path requested
+                    return $array[$key];
+                }
+            } elseif ($key === '*') {
+                // Handle wildcards
+
+                $values = [];
+                foreach ($array as $arr) {
+                    if ($value = Arr::path($arr, implode('.', $keys))) {
+                        $values[] = $value;
+                    }
+                }
+
+                if ($values) {
+                    // Found the values requested
+                    return $values;
+                } else {
+                    // Unable to dig deeper
+                    break;
+                }
+            } else {
+                // Unable to dig deeper
+                break;
+            }
+        } while ($keys);
+
+        // Unable to find the value requested
+        return $default;
+    }
+
+
+    /**
+     * Test if a value is an array with an additional check for array-like objects.
+     *
+     * @example
+     *
+     *     // Returns TRUE
+     *     Arr::is_array([]);
+     *     Arr::is_array(new ArrayObject);
+     *
+     *     // Returns FALSE
+     *     Arr::is_array(FALSE);
+     *     Arr::is_array('not an array!');
+     *     Arr::is_array(Database::instance());
+     *
+     * @param   mixed $value value to check
+     * @return  boolean
+     */
+    public static function isArray($value)
+    {
+        if (is_array($value)) {
+            // Definitely an array
+            return true;
+        } else {
+            // Possibly a Traversable object, functionally the same as an array
+            return (is_object($value) AND $value instanceof Traversable);
+        }
     }
 
 
@@ -336,18 +284,16 @@ class Core_Arr {
      *
      * [!!] A list of arrays is an array that contains arrays, eg: array(array $a, array $b, array $c, ...)
      *
-     * @param   array   $array  list of arrays to check
-     * @param   string  $key    key to pluck
+     * @param   array $array list of arrays to check
+     * @param   string $key key to pluck
      * @return  array
      */
     public static function pluck($array, $key)
     {
-        $values = array();
+        $values = [];
 
-        foreach ($array as $row)
-        {
-            if (isset($row[$key]))
-            {
+        foreach ($array as $row) {
+            if (isset($row[$key])) {
                 // Found a value in this row
                 $values[] = $row[$key];
             }
@@ -365,16 +311,16 @@ class Core_Arr {
      *     // Add an empty value to the start of a select list
      *     Arr::unshift($array, 'none', 'Select a value');
      *
-     * @param   array   $array  array to modify
-     * @param   string  $key    array key name
-     * @param   mixed   $val    array value
+     * @param   array $array array to modify
+     * @param   string $key array key name
+     * @param   mixed $val array value
      * @return  array
      */
-    public static function unshift( array & $array, $key, $val)
+    public static function unshift(array & $array, $key, $val)
     {
-        $array = array_reverse($array, TRUE);
+        $array = array_reverse($array, true);
         $array[$key] = $val;
-        $array = array_reverse($array, TRUE);
+        $array = array_reverse($array, true);
 
         return $array;
     }
@@ -401,30 +347,22 @@ class Core_Arr {
      * [!!] Unlike `array_map`, this method requires a callback and will only map
      * a single array.
      *
-     * @param   mixed   $callbacks  array of callbacks to apply to every element in the array
-     * @param   array   $array      array to map
-     * @param   array   $keys       array of keys to apply to
+     * @param   mixed $callbacks array of callbacks to apply to every element in the array
+     * @param   array $array array to map
+     * @param   array $keys array of keys to apply to
      * @return  array
      */
-    public static function map($callbacks, $array, $keys = NULL)
+    public static function map($callbacks, $array, $keys = null)
     {
-        foreach ($array as $key => $val)
-        {
-            if (is_array($val))
-            {
+        foreach ($array as $key => $val) {
+            if (is_array($val)) {
                 $array[$key] = Arr::map($callbacks, $array[$key]);
-            }
-            elseif ( ! is_array($keys) OR in_array($key, $keys))
-            {
-                if (is_array($callbacks))
-                {
-                    foreach ($callbacks as $cb)
-                    {
+            } elseif (!is_array($keys) OR in_array($key, $keys)) {
+                if (is_array($callbacks)) {
+                    foreach ($callbacks as $cb) {
                         $array[$key] = call_user_func($cb, $array[$key]);
                     }
-                }
-                else
-                {
+                } else {
                     $array[$key] = call_user_func($callbacks, $array[$key]);
                 }
             }
@@ -452,67 +390,47 @@ class Core_Arr {
      *     // The output of $john will now be:
      *     array('name' => 'mary', 'children' => array('fred', 'paul', 'sally', 'jane'))
      *
-     * @param   array  $array1      initial array
-     * @param   array  $array2,...  array to merge
+     * @param   array $array1 initial array
+     * @param   array $array2,... array to merge
      * @return  array
      */
     public static function merge($array1, $array2)
     {
-        if (Arr::is_assoc($array2))
-        {
-            foreach ($array2 as $key => $value)
-            {
+        if (Arr::isAssoc($array2)) {
+            foreach ($array2 as $key => $value) {
                 if (is_array($value)
-                    AND isset($array1[$key])
-                    AND is_array($array1[$key])
-                )
-                {
+                  AND isset($array1[$key])
+                  AND is_array($array1[$key])
+                ) {
                     $array1[$key] = Arr::merge($array1[$key], $value);
-                }
-                else
-                {
+                } else {
                     $array1[$key] = $value;
                 }
             }
-        }
-        else
-        {
-            foreach ($array2 as $value)
-            {
-                if ( ! in_array($value, $array1, TRUE))
-                {
+        } else {
+            foreach ($array2 as $value) {
+                if (!in_array($value, $array1, true)) {
                     $array1[] = $value;
                 }
             }
         }
 
-        if (func_num_args() > 2)
-        {
-            foreach (array_slice(func_get_args(), 2) as $array2)
-            {
-                if (Arr::is_assoc($array2))
-                {
-                    foreach ($array2 as $key => $value)
-                    {
+        if (func_num_args() > 2) {
+            foreach (array_slice(func_get_args(), 2) as $array2) {
+                if (Arr::isAssoc($array2)) {
+                    foreach ($array2 as $key => $value) {
                         if (is_array($value)
-                            AND isset($array1[$key])
-                            AND is_array($array1[$key])
-                        )
-                        {
+                          AND isset($array1[$key])
+                          AND is_array($array1[$key])
+                        ) {
                             $array1[$key] = Arr::merge($array1[$key], $value);
-                        }
-                        else
-                        {
+                        } else {
                             $array1[$key] = $value;
                         }
                     }
-                }
-                else
-                {
-                    foreach ($array2 as $value)
-                    {
-                        if ( ! in_array($value, $array1, TRUE))
-                        {
+                } else {
+                    foreach ($array2 as $value) {
+                        if (!in_array($value, $array1, true)) {
                             $array1[] = $value;
                         }
                     }
@@ -521,6 +439,31 @@ class Core_Arr {
         }
 
         return $array1;
+    }
+
+
+    /**
+     * Tests if an array is associative or not.
+     *
+     * @example
+     *
+     *     // Returns TRUE
+     *     Arr::is_assoc(array('username' => 'john.doe'));
+     *
+     *     // Returns FALSE
+     *     Arr::is_assoc('foo', 'bar');
+     *
+     * @param   array $array array to check
+     * @return  boolean
+     */
+    public static function isAssoc(array $array)
+    {
+        // Keys of the array
+        $keys = array_keys($array);
+
+        // If the array keys of the keys match the keys, then the array must
+        // not be associative (e.g. the keys array looked like {0:0, 1:1...}).
+        return array_keys($keys) !== $keys;
     }
 
 
@@ -539,23 +482,20 @@ class Core_Arr {
      *     // The output of $array will now be:
      *     array('name' => 'jack', 'mood' => 'happy', 'food' => 'tacos')
      *
-     * @param   array   $array1 master array
-     * @param   array   $array2 input arrays that will overwrite existing values
+     * @param   array $array1 master array
+     * @param   array $array2 input arrays that will overwrite existing values
      * @return  array
      */
     public static function overwrite($array1, $array2)
     {
-        foreach (array_intersect_key($array2, $array1) as $key => $value)
-        {
+        foreach (array_intersect_key($array2, $array1) as $key => $value) {
             $array1[$key] = $value;
         }
 
-        if (func_num_args() > 2)
-        {
-            foreach (array_slice(func_get_args(), 2) as $array2)
-            {
-                foreach (array_intersect_key($array2, $array1) as $key => $value)
-                {
+        if (func_num_args() > 2) {
+            foreach (array_slice(func_get_args(), 2) as $array2) {
+                foreach (array_intersect_key($array2,
+                  $array1) as $key => $value) {
                     $array1[$key] = $value;
                 }
             }
@@ -577,35 +517,30 @@ class Core_Arr {
      *     // Get the result of the callback
      *     $result = call_user_func_array($func, $params);
      *
-     * @param   string  $str    callback string
+     * @param   string $str callback string
      * @return  array   function, params
      */
     public static function callback($str)
     {
         // Overloaded as parts are found
-        $command = $params = NULL;
+        $command = $params = null;
 
         // command[param,param]
-        if (preg_match('/^([^\(]*+)\((.*)\)$/', $str, $match))
-        {
+        if (preg_match('/^([^\(]*+)\((.*)\)$/', $str, $match)) {
             // command
             $command = $match[1];
 
-            if ($match[2] !== '')
-            {
+            if ($match[2] !== '') {
                 // param,param
                 $params = preg_split('/(?<!\\\\),/', $match[2]);
                 $params = str_replace('\,', ',', $params);
             }
-        }
-        else
-        {
+        } else {
             // command
             $command = $str;
         }
 
-        if (strpos($command, '::') !== FALSE)
-        {
+        if (strpos($command, '::') !== false) {
             // Create a static method callable command
             $command = explode('::', $command, 2);
         }
@@ -629,29 +564,22 @@ class Core_Arr {
      *
      * [!!] The keys of array values will be discarded.
      *
-     * @param   array   $array  array to flatten
+     * @param   array $array array to flatten
      * @return  array
      * @since   3.0.6
      */
     public static function flatten($array)
     {
-        $is_assoc = Arr::is_assoc($array);
+        $is_assoc = Arr::isAssoc($array);
 
-        $flat = array();
-        foreach ($array as $key => $value)
-        {
-            if (is_array($value))
-            {
+        $flat = [];
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
                 $flat = array_merge($flat, Arr::flatten($value));
-            }
-            else
-            {
-                if ($is_assoc)
-                {
+            } else {
+                if ($is_assoc) {
                     $flat[$key] = $value;
-                }
-                else
-                {
+                } else {
                     $flat[] = $value;
                 }
             }

@@ -7,26 +7,25 @@
  * @package     Mamuph Lock
  * @category    Lock
  * @author      Mamuph Team
- * @copyright   (c) 2015-2016 Mamuph Team
+ * @copyright   (c) 2015-2017 Mamuph Team
  */
-
-abstract class Core_Lock
+abstract class Core_Lock implements Core_Contract_Lock
 {
 
     /**
-     * @var  Log  Singleton instance container
+     * @var  Log  Singleton instance container.
      */
-    protected static $_instance = array();
+    protected static $_instance = [];
 
 
     /**
-     * @var  Lock_Writer  Writer instance
+     * @var  Lock_Writer  Writer instance.
      */
     protected $_writer;
 
 
     /**
-     * Default dead message
+     * Default dead message.
      *
      * 'false' is used when dead message is not used and lock file is not removed
      * 'null' is used when lock file should be removed
@@ -45,9 +44,9 @@ abstract class Core_Lock
      *     $lock = Lock::instance($locker_id);
      *
      * @param   string  Lock instance ID
-     * @return  Lock
+     * @return  Core_Contract_Lock
      */
-    public static function instance($id = 'default')
+    public static function instance(string $id = 'default') : Core_Contract_Lock
     {
         if (!isset(Lock::$_instance[$id]) || Lock::$_instance[$id] === null)
         {
@@ -63,17 +62,16 @@ abstract class Core_Lock
 
 
     /**
-     * Attaches a lock writer
+     * Attaches a lock writer.
      *
      * @example
      *
      *     $lock->attach($writer);
      *
      * @param   Lock_Writer  $writer    instance
-     * @param   integer     $min_level  min level to write IF $levels is not an array
-     * @return  Lock
+     * @return  Core_Contract_Lock
      */
-    public function attach(Lock_Writer $writer)
+    public function attach(Lock_Writer $writer) : Core_Contract_Lock
     {
         $this->_writer = $writer;
 
@@ -88,9 +86,9 @@ abstract class Core_Lock
      *
      *     $lock->detach($writer);
      *
-     * @return  Lock
+     * @return  Core_Contract_Lock
      */
-    public function detach()
+    public function detach() : Core_Contract_Lock
     {
         // Remove the writer
         unset($this->_writer);
@@ -100,11 +98,11 @@ abstract class Core_Lock
 
 
     /**
-     * Write automatically a dead note
+     * Write automatically a dead message.
      *
      * @return  void
      */
-    public function dead_message()
+    public function deadMessage() : void
     {
         if ($this->dead_message === null)
             $this->destroy();
@@ -114,7 +112,7 @@ abstract class Core_Lock
 
 
     /**
-     * Write in lockfile
+     * Write in lockfile.
      *
      * @example
      *
@@ -123,7 +121,7 @@ abstract class Core_Lock
      * @param   mixed   $data   Data or string
      * @return  void
      */
-    public function write($data)
+    public function write($data) : void
     {
         // Write the filtered messages
         $this->_writer->write($data);
@@ -131,7 +129,7 @@ abstract class Core_Lock
 
 
     /**
-     * Read a lockfile
+     * Read a lockfile.
      *
      * @example
      *
@@ -146,18 +144,22 @@ abstract class Core_Lock
 
 
     /**
-     * Check that Lock exists
+     * Check that Lock exists.
+     *
+     * @return bool
      */
-    public function exists()
+    public function exists() : bool
     {
         return $this->_writer->exists();
     }
 
 
     /**
-     * Delete the lockfile
+     * Delete the lockfile.
+     *
+     * @return bool
      */
-    public function destroy()
+    public function destroy() : bool
     {
         $this->dead_message = null;
 
