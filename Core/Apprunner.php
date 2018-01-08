@@ -347,7 +347,7 @@ abstract class Core_Apprunner
 
         $controller_name = 'Controller_' . $file;
 
-        $controller_method = empty($args[1]) ? 'action_main' : 'action_' . $args[1];
+        $controller_method = empty($args[1]) ? 'actionMain' : 'action' . ucfirst($args[1]);
 
         $controller = new $controller_name;
 
@@ -365,7 +365,7 @@ abstract class Core_Apprunner
             return call_user_func_array(array($controller, $controller_method),
               count($args) === 0 ? null : $args);
         } else {
-            return $controller->action_main();
+            return $controller->actionMain();
         }
     }
 
