@@ -92,5 +92,5 @@ interface Core_Contract_Config
      * @param mixed $value The new value
      * @return Core_Contract_Config Chainable instance
      */
-    public function writeConfig($group, $key, $value) : Core_Contract_Config;
+    public function writeConfig(string $group, string $key, $value) : Core_Contract_Config;
 }

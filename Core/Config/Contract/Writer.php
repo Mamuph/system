@@ -23,11 +23,11 @@ interface Core_Config_Contract_Writer extends Core_Config_Contract_Source
      *
      * @param   string $group
      * @param   string $key
-     * @param   array $config
+     * @param   mixed $value
      * @uses    Apprunner::findFile to find file
      * @uses    Apprunner::includes to include file
      * @return  void
      */
-    public function write(string $group, string $key, array $config) : void;
+    public function write(string $group, string $key, $value) : void;
 
 }

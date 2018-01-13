@@ -44,16 +44,15 @@ class Core_Config_File_Writer implements Core_Config_Contract_Writer
      *
      * @param   string $group
      * @param   string $key
-     * @param   array $config
+     * @param   mixed $value
      * @uses    Apprunner::findFile to find file
      * @uses    Apprunner::includes to include file
      * @return  void
      */
-    public function write(string $group, string $key, array $config) : void
+    public function write(string $group, string $key, $value) : void
     {
 
-        if ($files = Apprunner::findFile($this->_directory, $group, null,
-          true)) {
+        if ($files = Apprunner::findFile($this->_directory, $group, null, true)) {
             foreach ($files as $file) {
                 // Merge each file to the configuration array
                 $sconfig = Apprunner::includes($file);

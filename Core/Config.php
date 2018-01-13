@@ -206,7 +206,7 @@ abstract class Core_Config implements Core_Contract_Config
      * @param mixed $value The new value
      * @return Core_Contract_Config Chainable instance
      */
-    public function writeConfig($group, $key, $value) : Core_Contract_Config
+    public function writeConfig(string $group, string $key, $value) : Core_Contract_Config
     {
         foreach ($this->_sources as $source) {
             if (!($source instanceof Core_Config_Contract_Writer)) {
