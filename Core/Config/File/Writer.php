@@ -56,7 +56,7 @@ class Core_Config_File_Writer implements Core_Config_Contract_Writer
             foreach ($files as $file) {
                 // Merge each file to the configuration array
                 $sconfig = Apprunner::includes($file);
-                $sconfig[$key] = $config;
+                $sconfig[$key] = $value;
 
                 // Write buffer content
                 file_put_contents($file,
