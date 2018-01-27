@@ -396,45 +396,39 @@ class Core_Arr
      */
     public static function merge($array1, $array2)
     {
-        if (Arr::isAssoc($array2)) {
-            foreach ($array2 as $key => $value) {
-                if (is_array($value)
-                  AND isset($array1[$key])
-                  AND is_array($array1[$key])
-                ) {
-                    $array1[$key] = Arr::merge($array1[$key], $value);
-                } else {
-                    $array1[$key] = $value;
+
+        $submerge = function (&$array1, $array2)
+        {
+            if (Arr::isAssoc($array2))
+            {
+                foreach ($array2 as $key => $value)
+                {
+                    if (is_array($value)
+                      && isset($array1[$key])
+                      && is_array($array1[$key])
+                    ) {
+                        $array1[$key] = Arr::merge($array1[$key], $value);
+                    } else {
+                        $array1[$key] = $value;
+                    }
                 }
             }
-        } else {
-            foreach ($array2 as $value) {
-                if (!in_array($value, $array1, true)) {
-                    $array1[] = $value;
+            else
+            {
+                foreach ($array2 as $value)
+                {
+                    if (!in_array($value, $array1, true))
+                        $array1[] = $value;
                 }
             }
-        }
+        };
+
+        $submerge($array1, $array2);
 
         if (func_num_args() > 2) {
-            foreach (array_slice(func_get_args(), 2) as $array2) {
-                if (Arr::isAssoc($array2)) {
-                    foreach ($array2 as $key => $value) {
-                        if (is_array($value)
-                          AND isset($array1[$key])
-                          AND is_array($array1[$key])
-                        ) {
-                            $array1[$key] = Arr::merge($array1[$key], $value);
-                        } else {
-                            $array1[$key] = $value;
-                        }
-                    }
-                } else {
-                    foreach ($array2 as $value) {
-                        if (!in_array($value, $array1, true)) {
-                            $array1[] = $value;
-                        }
-                    }
-                }
+            foreach (array_slice(func_get_args(), 2) as $array2)
+            {
+                $submerge($array1, $array2);
             }
         }
 
