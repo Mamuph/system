@@ -14,7 +14,7 @@ abstract class Core_FlatDB_Driver
     /**
      * @var array   In-memory storage
      */
-    public $data = array();
+    public $data = [];
     
 
     /**

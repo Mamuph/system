@@ -11,39 +11,47 @@
  *
  * @package    Mamuph Config
  * @category   Configuration
- * @author     Kohana Team
+ * @author     Kohana Team and Mamuph Team
  * @copyright  (c) 2012-2014 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class Core_Config_Group extends ArrayObject {
+abstract class Core_Config_Group extends ArrayObject implements Core_Config_Contract_Group
+{
 
     /**
-     * Reference the config object that created this group
-     * Used when updating config
-     * @var Core_Config
+     * Reference the config object that created this group.
+     * Used when updating config.
+     *
+     * @var Core_Contract_Config
      */
-    protected $_parent_instance = NULL;
+    protected $_parent_instance = null;
+
 
     /**
-     * The group this config is for
-     * Used when updating config items
+     * The group this config is for.
+     * Used when updating config items.
+     *
      * @var string
      */
     protected $_group_name = '';
 
 
     /**
-     * Constructs the group object.  Core_Config passes the config group
-     * and its config items to the object here.
+     * Constructs the group object.
+     * Core_Config passes the config group and its config items to the
+     * object here.
      *
-     * @param Core_Config  $instance "Owning" instance of Core_Config
-     * @param string         $group    The group name
-     * @param array          $config   Group's config
+     * @param Core_Contract_Config $instance "Owning" instance of Core_Config
+     * @param string $group The group name
+     * @param array $config Group's config
      */
-    public function __construct(Core_Config $instance, $group, array $config = array())
-    {
+    public function __construct(
+      Core_Contract_Config $instance,
+      string $group,
+      array $config = []
+    ) {
         $this->_parent_instance = $instance;
-        $this->_group_name      = $group;
+        $this->_group_name = $group;
 
         parent::__construct($config, ArrayObject::ARRAY_AS_PROPS);
     }
@@ -58,7 +66,7 @@ class Core_Config_Group extends ArrayObject {
      *
      * @return  string
      */
-    public function __toString()
+    public function __toString() : string
     {
         return serialize($this->getArrayCopy());
     }
@@ -69,7 +77,7 @@ class Core_Config_Group extends ArrayObject {
      *
      * @return array Array copy of the group's config
      */
-    public function as_array()
+    public function asArray() : array
     {
         return $this->getArrayCopy();
     }
@@ -80,7 +88,7 @@ class Core_Config_Group extends ArrayObject {
      *
      * @return string The group name
      */
-    public function group_name()
+    public function groupName() : string
     {
         return $this->_group_name;
     }
@@ -93,11 +101,11 @@ class Core_Config_Group extends ArrayObject {
      *
      *     $value = $config->get($key);
      *
-     * @param   string  $key        array key
-     * @param   mixed   $default    default value
+     * @param   string $key array key
+     * @param   mixed $default default value
      * @return  mixed
      */
-    public function get($key, $default = NULL)
+    public function get(string $key, string $default = null)
     {
         return $this->offsetExists($key) ? $this->offsetGet($key) : $default;
     }
@@ -110,11 +118,11 @@ class Core_Config_Group extends ArrayObject {
      *
      *     $config->set($key, $new_value);
      *
-     * @param   string  $key    array key
-     * @param   mixed   $value  array value
-     * @return  $this
+     * @param   string $key array key
+     * @param   mixed $value array value
+     * @return  Core_Config_Contract_Group
      */
-    public function set($key, $value)
+    public function set(string $key, $value) : Core_Config_Contract_Group
     {
         $this->offsetSet($key, $value);
 
@@ -134,12 +142,15 @@ class Core_Config_Group extends ArrayObject {
      *
      *     $config['var'] = 'asd';
      *
-     * @param string $key   The key of the config item we're changing
-     * @param mixed  $value The new array value
+     * @param string $key The key of the config item we're changing
+     * @param mixed $value The new array value
      */
     public function offsetSet($key, $value)
     {
-        $this->_parent_instance->_write_config($this->_group_name, $key, $value);
+        $this->_parent_instance->writeConfig(
+          $this->_group_name,
+          $key,
+          $value);
 
         return parent::offsetSet($key, $value);
     }

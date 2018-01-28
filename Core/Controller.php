@@ -13,6 +13,6 @@
 abstract class Core_Controller
 {
 
-    public function action_main() {}
+    public function actionMain() {}
 
 }
