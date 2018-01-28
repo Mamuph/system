@@ -51,7 +51,7 @@ class Core_Log_File extends Log_Writer
      * @param   array   $messages
      * @return  void
      */
-    public function write(array $messages)
+    public function write(array $messages) : void
     {
         // Set the yearly directory name
         $directory = $this->_directory.date('Y');
@@ -83,7 +83,7 @@ class Core_Log_File extends Log_Writer
         foreach ($messages as $message)
         {
             // Write each message into the log file
-            file_put_contents($filename, PHP_EOL . $this->format_message($message) , FILE_APPEND);
+            file_put_contents($filename, PHP_EOL . $this->formatMessage($message) , FILE_APPEND);
         }
     }
 

@@ -7,7 +7,7 @@
  * @package     Mamuph Lock
  * @category    Lock
  * @author      Mamuph Team
- * @copyright   (c) 2015-2016 Mamuph Team
+ * @copyright   (c) 2015-2018 Mamuph Team
  */
 abstract class Core_Lock_File extends Lock_Writer
 {
@@ -35,7 +35,7 @@ abstract class Core_Lock_File extends Lock_Writer
 
 
     /**
-     * Writes on the lock file
+     * Writes on the lock file.
      *
      * @example
      *
@@ -59,7 +59,7 @@ abstract class Core_Lock_File extends Lock_Writer
 
 
     /**
-     * Read the contents from the lock file
+     * Read the contents from the lock file.
      *
      * @return string
      */
@@ -70,7 +70,7 @@ abstract class Core_Lock_File extends Lock_Writer
 
 
     /**
-     * Check that lock file exists
+     * Check that lock file exists.
      *
      * @uses File::exists() in order to check if file exists
      * @return bool
@@ -82,7 +82,7 @@ abstract class Core_Lock_File extends Lock_Writer
 
 
     /**
-     * Delete the lock file
+     * Delete the lock file.
      *
      * @return bool
      */

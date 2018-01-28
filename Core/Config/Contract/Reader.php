@@ -1,17 +1,15 @@
 <?php
 
-
 /**
  * Interface for config readers
  *
  * @package    Mamuph Config
  * @category   Configuration
- * @author     Kohana Team
- * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @author     Mamuph Team
+ * @copyright  (c) 2008-2012 Mamuph Team
  */
-interface Core_Config_Reader extends Core_Config_Source
-{
+interface Core_Config_Contract_Reader extends Core_Config_Contract_Source {
+
     /**
      * Tries to load the specified configuration group
      *
@@ -20,5 +18,6 @@ interface Core_Config_Reader extends Core_Config_Source
      * @param  string $group Configuration group
      * @return boolean|array
      */
-    public function load($group);
+    public function load(string $group);
+
 }

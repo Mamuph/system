@@ -6,7 +6,7 @@
  * @package     Mamuph FlatDB
  * @category    FlatDB
  * @author      Mamuph Team
- * @copyright   (c) 2015-2016 Mamuph Team
+ * @copyright   (c) 2015-2017 Mamuph Team
  */
 class Core_FlatDB_JSON extends FlatDB_Driver
 {
