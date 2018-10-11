@@ -28,6 +28,9 @@ abstract class Core_Hook
 
 
     /**
+     * Hooks for unix signals and mamuph core events
+     *
+     * @see http://man7.org/linux/man-pages/man7/signal.7.html
      * @var array   Hook list
      */
     protected $hooks = [
