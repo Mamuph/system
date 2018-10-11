@@ -7,7 +7,7 @@
  * @package     Mamuph Core
  * @category    Apprunner
  * @author      Mamuph Team
- * @copyright   (c) 2015-2017 Mamuph Team
+ * @copyright   (c) 2015-2018 Mamuph Team
  */
 abstract class Core_Apprunner
 {
@@ -46,6 +46,8 @@ abstract class Core_Apprunner
     const EXIT_PROTOCOL    = 76;   // Remote error in protocol
     const EXIT_NOPERM      = 77;   // Permission denied
     const EXIT_CONFIG      = 78;   // Configuration error
+    const EXIT_HUP         = 129;  // Script terminated by Hang up signal
+    const EXIT_CTRLC       = 130;  // Script terminated by Control-C
 
 
     /**
