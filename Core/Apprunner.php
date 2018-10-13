@@ -17,7 +17,7 @@ abstract class Core_Apprunner
 
 
     // Mamuph core version
-    const VERSION = '2.1';
+    const VERSION = '2.2';
 
 
     // Environment constants as bitmask
